@@ -21,6 +21,8 @@ package net.jrkatz.minero.budget.period;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import net.jrkatz.minero.budget.R;
+
 import org.joda.time.LocalDate;
 
 /**

@@ -14,24 +14,31 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
         </android.support.v7.widget.Toolbar>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_below="@+id/my_toolbar"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="216dp"
-        android:id="@+id/remainingAmt" />
+        android:weightSum="1">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:ems="10"
-        android:layout_below="@+id/remainingAmt"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="65dp"
-        android:id="@+id/spendAmt"
-        android:hint="spend"
-        android:selectAllOnFocus="true"
-        android:imeOptions="actionDone"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/budget_period_fragment"
+            android:layout_weight="0.69" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:layout_below="@+id/remainingAmt"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="65dp"
+            android:id="@+id/spendAmt"
+            android:hint="@string/spend"
+            android:selectAllOnFocus="true"
+            android:imeOptions="actionDone"/>
+    </LinearLayout>
+
 </RelativeLayout>

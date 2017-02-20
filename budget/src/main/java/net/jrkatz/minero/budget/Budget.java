@@ -31,7 +31,7 @@ public class Budget implements Parcelable {
     private final long mDistribution;
     private final String mName;
 
-    Budget(
+    public Budget(
             final PeriodDefinition periodDefinition,
             final int distribution,
             final String name

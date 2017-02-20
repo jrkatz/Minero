@@ -46,7 +46,7 @@ dependencies {
     })
 
     compile 'com.android.support:appcompat-v7:25.1.1'
-    compile group: 'com.google.guava', name: 'guava', version: '21.0'
+    compile group: 'com.google.guava', name: 'guava', version: '20.0'
     compile 'joda-time:joda-time:2.9.7'
 
     testCompile 'junit:junit:4.12'

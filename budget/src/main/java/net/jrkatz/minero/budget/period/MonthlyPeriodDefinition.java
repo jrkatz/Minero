@@ -29,7 +29,7 @@ import org.joda.time.LocalDate;
 public class MonthlyPeriodDefinition extends PeriodDefinition {
     private final int mDayStart;
 
-    MonthlyPeriodDefinition(final int dayStart) {
+    public MonthlyPeriodDefinition(final int dayStart) {
         mDayStart = dayStart;
     }
 

@@ -19,6 +19,8 @@
 package net.jrkatz.minero;
 
 import android.net.ParseException;
+import android.net.Uri;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -27,9 +29,27 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class Lander extends AppCompatActivity {
+import com.google.common.collect.ImmutableList;
 
-    private int mDollars = 400;
+import net.jrkatz.minero.budget.Budget;
+import net.jrkatz.minero.budget.BudgetPeriod;
+import net.jrkatz.minero.budget.SpendEvent;
+import net.jrkatz.minero.budget.period.MonthlyPeriodDefinition;
+
+import org.joda.time.LocalDate;
+
+public class Lander extends AppCompatActivity implements BudgetPeriodFrag.OnFragmentInteractionListener {
+
+    private final BudgetPeriod mBudgetPeriod = new BudgetPeriod(
+            new Budget(new MonthlyPeriodDefinition(1),
+                400,
+                "default"
+                ),
+            new MonthlyPeriodDefinition(1).periodForDate(LocalDate.now()),
+            400,
+            ImmutableList.<SpendEvent>of()
+    );
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,8 +57,8 @@ public class Lander extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        final TextView dollarView = (TextView)findViewById(R.id.remainingAmt);
-        dollarView.setText(Integer.toString(mDollars));
+        Fragment budgetPeriodFrag = BudgetPeriodFrag.newInstance(mBudgetPeriod);
+        getSupportFragmentManager().beginTransaction().add(R.id.budget_period_fragment, budgetPeriodFrag).commit();
 
         final EditText spendAmt = (EditText)findViewById(R.id.spendAmt);
         spendAmt.setOnEditorActionListener(new EditText.OnEditorActionListener(){
@@ -49,8 +69,6 @@ public class Lander extends AppCompatActivity {
                         try {
                             final String spendVal = spendAmt.getText().toString();
                             final int dollars = Integer.parseInt(spendVal);
-                            mDollars -= dollars;
-                            dollarView.setText(Integer.toString(mDollars));
                             return true;
 
                         } catch (ParseException e) {
@@ -61,5 +79,10 @@ public class Lander extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
