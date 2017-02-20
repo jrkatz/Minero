@@ -18,13 +18,18 @@
 
 package net.jrkatz.minero.budget;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.joda.time.LocalDateTime;
+
+import java.util.Date;
 
 /**
  * @Author jrkatz
  * @Date 2/19/2017.
  */
-public class SpendEvent {
+public class SpendEvent implements Parcelable {
     private final int mId;
     private final long mAmount;
     private final String mDescription;
@@ -37,7 +42,39 @@ public class SpendEvent {
         this.mTime = time;
     }
 
+    protected SpendEvent(Parcel in) {
+        mId = in.readInt();
+        mAmount = in.readLong();
+        mDescription = in.readString();
+        mTime = LocalDateTime.fromDateFields(new Date(in.readLong()));
+    }
+
+    public static final Creator<SpendEvent> CREATOR = new Creator<SpendEvent>() {
+        @Override
+        public SpendEvent createFromParcel(Parcel in) {
+            return new SpendEvent(in);
+        }
+
+        @Override
+        public SpendEvent[] newArray(int size) {
+            return new SpendEvent[size];
+        }
+    };
+
     public long getAmount() {
         return mAmount;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(mId);
+        dest.writeLong(mAmount);
+        dest.writeString(mDescription);
+        dest.writeLong(mTime.toDate().getTime());
     }
 }

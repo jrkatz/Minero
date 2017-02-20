@@ -18,17 +18,22 @@
 
 package net.jrkatz.minero.budget;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 
 import net.jrkatz.minero.budget.period.Period;
+
+import java.util.ArrayList;
 
 /**
  * @Author jrkatz
  * @Date 2/19/2017.
  */
 
-public class BudgetPeriod {
+public class BudgetPeriod implements Parcelable {
     private final Budget mBudget;
     private final Period mPeriod;
     private final long mRemaining;
@@ -45,6 +50,27 @@ public class BudgetPeriod {
         this.mRemaining = remaining;
         this.mSpendEvents = spendEvents;
     }
+
+    protected BudgetPeriod(Parcel in) {
+        mBudget = in.readParcelable(Budget.class.getClassLoader());
+        mPeriod = in.readParcelable(Period.class.getClassLoader());
+        mRemaining = in.readLong();
+        final ArrayList<SpendEvent> spendEvents = new ArrayList<>();
+        in.readTypedList(spendEvents, SpendEvent.CREATOR);
+        mSpendEvents = ImmutableList.copyOf(spendEvents);
+    }
+
+    public static final Creator<BudgetPeriod> CREATOR = new Creator<BudgetPeriod>() {
+        @Override
+        public BudgetPeriod createFromParcel(Parcel in) {
+            return new BudgetPeriod(in);
+        }
+
+        @Override
+        public BudgetPeriod[] newArray(int size) {
+            return new BudgetPeriod[size];
+        }
+    };
 
     public long getRemaining() {
         return mRemaining;
@@ -71,4 +97,16 @@ public class BudgetPeriod {
         );
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(mBudget, flags);
+        dest.writeParcelable(mPeriod, flags);
+        dest.writeLong(mRemaining);
+        dest.writeTypedList(mSpendEvents);
+    }
 }

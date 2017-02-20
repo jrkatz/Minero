@@ -18,13 +18,15 @@
 
 package net.jrkatz.minero.budget.period;
 
+import android.os.Parcelable;
+
 import org.joda.time.LocalDate;
 
 /**
  * @Author jrkatz
  * @Date 2/19/2017.
  */
-public abstract class PeriodDefinition {
+public abstract class PeriodDefinition implements Parcelable {
     abstract Period periodForDate(final LocalDate date);
 
     public final Period nextPeriod(final Period period) {

@@ -18,6 +18,8 @@
 
 package net.jrkatz.minero.budget.period;
 
+import android.os.Parcel;
+
 import org.joda.time.LocalDate;
 
 /**
@@ -29,6 +31,10 @@ public class MonthlyPeriodDefinition extends PeriodDefinition {
 
     MonthlyPeriodDefinition(final int dayStart) {
         mDayStart = dayStart;
+    }
+
+    protected MonthlyPeriodDefinition(Parcel in) {
+        mDayStart = in.readInt();
     }
 
     private LocalDate startForMonth(final int year, final int month) {
@@ -48,4 +54,26 @@ public class MonthlyPeriodDefinition extends PeriodDefinition {
     public Period periodForDate(final LocalDate date) {
         return periodForMonth(date.getYear(), date.getMonthOfYear());
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(mDayStart);
+    }
+
+    public static final Creator<MonthlyPeriodDefinition> CREATOR = new Creator<MonthlyPeriodDefinition>() {
+        @Override
+        public MonthlyPeriodDefinition createFromParcel(Parcel in) {
+            return new MonthlyPeriodDefinition(in);
+        }
+
+        @Override
+        public MonthlyPeriodDefinition[] newArray(int size) {
+            return new MonthlyPeriodDefinition[size];
+        }
+    };
 }
