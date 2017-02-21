@@ -61,6 +61,13 @@
             android:id="@+id/period"
             android:layout_weight="0.01" />
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/debit_list_fragment">
+
+        </FrameLayout>
+
     </LinearLayout>
 
 </FrameLayout>

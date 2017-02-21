@@ -18,14 +18,11 @@
 
 package net.jrkatz.minero;
 
-import android.net.ParseException;
-import android.net.Uri;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -33,12 +30,12 @@ import com.google.common.collect.ImmutableList;
 
 import net.jrkatz.minero.budget.Budget;
 import net.jrkatz.minero.budget.BudgetPeriod;
-import net.jrkatz.minero.budget.SpendEvent;
+import net.jrkatz.minero.budget.Debit;
 import net.jrkatz.minero.budget.period.MonthlyPeriodDefinition;
 
 import org.joda.time.LocalDate;
 
-public class Lander extends AppCompatActivity implements BudgetPeriodFrag.OnFragmentInteractionListener {
+public class Lander extends AppCompatActivity {
 
     private final BudgetPeriod mBudgetPeriod = new BudgetPeriod(
             new Budget(new MonthlyPeriodDefinition(1),
@@ -47,7 +44,7 @@ public class Lander extends AppCompatActivity implements BudgetPeriodFrag.OnFrag
                 ),
             new MonthlyPeriodDefinition(1).periodForDate(LocalDate.now()),
             400,
-            ImmutableList.<SpendEvent>of()
+            ImmutableList.<Debit>of()
     );
 
     @Override
@@ -58,31 +55,14 @@ public class Lander extends AppCompatActivity implements BudgetPeriodFrag.OnFrag
         setSupportActionBar(myToolbar);
 
         Fragment budgetPeriodFrag = BudgetPeriodFrag.newInstance(mBudgetPeriod);
-        getSupportFragmentManager().beginTransaction().add(R.id.budget_period_fragment, budgetPeriodFrag).commit();
+        getFragmentManager().beginTransaction().add(R.id.budget_period_fragment, budgetPeriodFrag).commit();
 
         final EditText spendAmt = (EditText)findViewById(R.id.spendAmt);
         spendAmt.setOnEditorActionListener(new EditText.OnEditorActionListener(){
             @Override
             public boolean onEditorAction(TextView spendAmt, int actionId, KeyEvent event) {
-                switch(actionId) {
-                    case EditorInfo.IME_ACTION_DONE:
-                        try {
-                            final String spendVal = spendAmt.getText().toString();
-                            final int dollars = Integer.parseInt(spendVal);
-                            return true;
-
-                        } catch (ParseException e) {
-                            return false; //just don't take the input
-                        }
-                    default:
-                }
-                return false;
+                return true;
             }
         });
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
     }
 }

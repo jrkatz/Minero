@@ -37,27 +37,27 @@ public class BudgetPeriod implements Parcelable {
     private final Budget mBudget;
     private final Period mPeriod;
     private final long mRemaining;
-    private final ImmutableList<SpendEvent> mSpendEvents;
+    private final ImmutableList<Debit> mDebits;
 
     public BudgetPeriod(
             Budget budget,
             Period period,
             long remaining,
-            ImmutableList<SpendEvent> spendEvents
+            ImmutableList<Debit> debits
     ) {
         this.mBudget = budget;
         this.mPeriod = period;
         this.mRemaining = remaining;
-        this.mSpendEvents = spendEvents;
+        this.mDebits = debits;
     }
 
     protected BudgetPeriod(Parcel in) {
         mBudget = in.readParcelable(Budget.class.getClassLoader());
         mPeriod = in.readParcelable(Period.class.getClassLoader());
         mRemaining = in.readLong();
-        final ArrayList<SpendEvent> spendEvents = new ArrayList<>();
-        in.readTypedList(spendEvents, SpendEvent.CREATOR);
-        mSpendEvents = ImmutableList.copyOf(spendEvents);
+        final ArrayList<Debit> debits = new ArrayList<>();
+        in.readTypedList(debits, Debit.CREATOR);
+        mDebits = ImmutableList.copyOf(debits);
     }
 
     public static final Creator<BudgetPeriod> CREATOR = new Creator<BudgetPeriod>() {
@@ -80,20 +80,20 @@ public class BudgetPeriod implements Parcelable {
         return mPeriod;
     }
 
-    public ImmutableCollection<SpendEvent> getSpendEvents() {
-        return mSpendEvents;
+    public ImmutableCollection<Debit> getSpendEvents() {
+        return mDebits;
     }
 
     public Budget getBudget() {
         return mBudget;
     }
 
-    public BudgetPeriod spend(final SpendEvent spendEvent) {
+    public BudgetPeriod spend(final Debit debit) {
         return new BudgetPeriod(
                 mBudget,
                 mPeriod,
-                mRemaining - spendEvent.getAmount(),
-                ImmutableList.<SpendEvent>builder().addAll(mSpendEvents).add(spendEvent).build()
+                mRemaining - debit.getAmount(),
+                ImmutableList.<Debit>builder().addAll(mDebits).add(debit).build()
         );
     }
 
@@ -107,6 +107,6 @@ public class BudgetPeriod implements Parcelable {
         dest.writeParcelable(mBudget, flags);
         dest.writeParcelable(mPeriod, flags);
         dest.writeLong(mRemaining);
-        dest.writeTypedList(mSpendEvents);
+        dest.writeTypedList(mDebits);
     }
 }
