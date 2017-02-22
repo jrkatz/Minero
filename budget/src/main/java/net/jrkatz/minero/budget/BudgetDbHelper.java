@@ -36,7 +36,7 @@ public class BudgetDbHelper extends SQLiteOpenHelper {
                     "amount INTEGER," +
                     "description TEXT," +
                     "time INTEGER" +
-                    ")" +
+                    ");" +
             "CREATE INDEX idx_debit_time ON debit (time)";
 
     public BudgetDbHelper(Context context) {

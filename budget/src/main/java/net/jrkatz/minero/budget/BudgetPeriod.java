@@ -18,6 +18,7 @@
 
 package net.jrkatz.minero.budget;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -39,6 +40,14 @@ public class BudgetPeriod implements Parcelable {
     private final long mRemaining;
     private final ImmutableList<Debit> mDebits;
 
+    /**
+     * Functions that call this should be unit tested to ensure 'remaining'
+     * lines up with the 'budget' and the 'debits' list
+     * @param budget
+     * @param period
+     * @param remaining
+     * @param debits
+     */
     public BudgetPeriod(
             Budget budget,
             Period period,
@@ -58,6 +67,17 @@ public class BudgetPeriod implements Parcelable {
         final ArrayList<Debit> debits = new ArrayList<>();
         in.readTypedList(debits, Debit.CREATOR);
         mDebits = ImmutableList.copyOf(debits);
+    }
+
+    public static final BudgetPeriod loadBudgetPeriod(SQLiteDatabase db, Budget budget, Period period) {
+        final ImmutableList.Builder<Debit> debits = ImmutableList.builder();
+        long remaining = budget.getDistribution();
+        for(final Debit debit : Debit.readDebits(db, period)) {
+            debits.add(debit);
+            remaining -= debit.getAmount();
+        }
+
+        return new BudgetPeriod(budget, period, remaining, debits.build());
     }
 
     public static final Creator<BudgetPeriod> CREATOR = new Creator<BudgetPeriod>() {
@@ -80,7 +100,7 @@ public class BudgetPeriod implements Parcelable {
         return mPeriod;
     }
 
-    public ImmutableCollection<Debit> getSpendEvents() {
+    public ImmutableCollection<Debit> getDebits() {
         return mDebits;
     }
 

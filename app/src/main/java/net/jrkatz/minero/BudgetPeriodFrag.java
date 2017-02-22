@@ -18,6 +18,7 @@
 
 package net.jrkatz.minero;
 
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -41,6 +42,7 @@ public class BudgetPeriodFrag extends Fragment {
     private static final String ARG_BUDGET_PERIOD = "budgetPeriod";
 
     private BudgetPeriod mBudgetPeriod;
+    private DebitListFrag mDebitListFragment;
 
     public BudgetPeriodFrag() {
         // Required empty public constructor
@@ -69,23 +71,43 @@ public class BudgetPeriodFrag extends Fragment {
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        final View v = inflater.inflate(R.layout.fragment_budget_period, container, false);
-        final TextView remainingAmt = (TextView)v.findViewById(R.id.remainingAmt);
+    private void renderBudgetPeriod() {
+        FragmentManager fragmentManager = getChildFragmentManager();
+        DebitListFrag debitListFragment = (DebitListFrag) fragmentManager.findFragmentByTag("debit_list");
+
+        final ArrayList<Debit> debits = new ArrayList<>(mBudgetPeriod.getDebits());
+        if (debitListFragment == null) {
+            final DebitListFrag debitListFrag = DebitListFrag.newInstance(debits);
+            getChildFragmentManager().beginTransaction().add(R.id.debit_list_fragment, debitListFrag, "debit_list").commit();
+        }
+        else {
+            debitListFragment.updateDebits(debits);
+        }
+        final View v = getView();
+        final TextView remainingAmt = (TextView) v.findViewById(R.id.remainingAmt);
         remainingAmt.setText(Long.toString(mBudgetPeriod.getRemaining()));
 
         final TextView periodView = (TextView)v.findViewById(R.id.period);
         final LocalDate end = mBudgetPeriod.getPeriod().getEnd();
         final String untilDateString = String.format(getResources().getString(R.string.until_date_format), end.toString(getResources().getString(R.string.ymd_format)));
         periodView.setText(untilDateString);
+    }
 
-        final ArrayList<Debit> debits = new ArrayList<>();
-        debits.addAll(mBudgetPeriod.getSpendEvents());
-        final Fragment debitListFrag = DebitListFrag.newInstance(debits);
-        getChildFragmentManager().beginTransaction().add(R.id.debit_list_fragment, debitListFrag).commit();
-        return v;
+    public void updateBudgetPeriod(BudgetPeriod budgetPeriod) {
+        mBudgetPeriod = budgetPeriod;
+        renderBudgetPeriod();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_budget_period, container, false);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        renderBudgetPeriod();
     }
 }

@@ -42,9 +42,15 @@ public class DebitListFrag extends Fragment {
     private static final String ARG_DEBITS = "debits";
 
     private ArrayList<Debit> mDebits;
+    private DebitsAdapter mAdapter;
 
     public DebitListFrag() {
         // Required empty public constructor
+    }
+
+    public void updateDebits(ArrayList<Debit> debits) {
+        mAdapter.clear();
+        mAdapter.addAll(debits);
     }
 
     /**
@@ -76,8 +82,8 @@ public class DebitListFrag extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_debit_list, container, false);
         ListView list = (ListView) view.findViewById(R.id.debit_list);
-        DebitsAdapter adapter = new DebitsAdapter(getContext(), mDebits);
-        list.setAdapter(adapter);
+        mAdapter = new DebitsAdapter(getContext(), mDebits);
+        list.setAdapter(mAdapter);
         return view;
     }
 

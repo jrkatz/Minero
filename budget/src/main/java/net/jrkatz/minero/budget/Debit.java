@@ -136,7 +136,8 @@ public class Debit implements Parcelable {
         ContentValues values = new ContentValues();
         values.put("amount", amount);
         values.put("description", description);
-        values.put("time", (int) time.toDate().getTime());
+        //without the explicit Long boxing this is boxed & truncated into an Integer.
+        values.put("time", Long.valueOf(time.toDate().getTime()));
         long id = db.insertOrThrow("debit", null, values);
         db.setTransactionSuccessful();
         db.endTransaction();

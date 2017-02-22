@@ -46,6 +46,9 @@ public class Budget implements Parcelable {
         mDistribution = in.readLong();
         mName = in.readString();
     }
+    public long getDistribution() {
+        return mDistribution;
+    }
 
     public static final Creator<Budget> CREATOR = new Creator<Budget>() {
         @Override
