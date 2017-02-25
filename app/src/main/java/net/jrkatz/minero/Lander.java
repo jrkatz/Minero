@@ -49,7 +49,7 @@ public class Lander extends AppCompatActivity {
     }
 
     private void renderBudget() {
-        BudgetPeriodFrag budgetPeriodView = (BudgetPeriodFrag) findViewById(R.id.budgetPeriod);
+        BudgetPeriodView budgetPeriodView = (BudgetPeriodView) findViewById(R.id.budgetPeriod);
         budgetPeriodView.bind(mBudgetPeriod);
     }
 

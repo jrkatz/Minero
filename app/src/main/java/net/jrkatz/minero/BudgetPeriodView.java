@@ -19,7 +19,6 @@
 package net.jrkatz.minero;
 
 import android.content.Context;
-import android.app.Fragment;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -32,15 +31,14 @@ import org.joda.time.LocalDate;
 import java.util.ArrayList;
 
 /**
- * A simple {@link Fragment} subclass.
- * create an instance of this fragment.
+ * A custom view for displaying Budget Period data
  */
-public class BudgetPeriodFrag extends FrameLayout {
+public class BudgetPeriodView extends FrameLayout {
     private BudgetPeriod mBudgetPeriod;
 
-    public BudgetPeriodFrag(Context context, AttributeSet attrs) {
+    public BudgetPeriodView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        View.inflate(context, R.layout.fragment_budget_period, this);
+        View.inflate(context, R.layout.view_budget_period, this);
     }
 
     public void bind(final BudgetPeriod budgetPeriod) {
