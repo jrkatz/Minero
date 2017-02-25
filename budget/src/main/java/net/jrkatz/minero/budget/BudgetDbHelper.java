@@ -22,6 +22,12 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.google.common.collect.ImmutableList;
+
+import net.jrkatz.minero.budget.period.Period;
+
+import org.joda.time.LocalDateTime;
+
 /**
  * @Author jrkatz
  * @Date 2/20/2017.
@@ -49,7 +55,17 @@ public class BudgetDbHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
 
+    public ImmutableList<Debit> readDebits(final Period period) {
+        return Debit.readDebits(getReadableDatabase(), period);
+    }
+
+    public Debit createDebit(final int amount, final String description, final LocalDateTime time) {
+        return Debit.createDebit(getWritableDatabase(), amount, description, time);
+    }
+
+    public final BudgetPeriod loadBudgetPeriod(final Budget budget, final Period period) {
+        return BudgetPeriod.loadBudgetPeriod(getWritableDatabase(), budget, period);
     }
 }

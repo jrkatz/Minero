@@ -19,8 +19,6 @@
 package net.jrkatz.minero;
 
 import android.app.FragmentManager;
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -29,11 +27,9 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
-
 import net.jrkatz.minero.budget.Budget;
 import net.jrkatz.minero.budget.BudgetDbHelper;
 import net.jrkatz.minero.budget.BudgetPeriod;
-import net.jrkatz.minero.budget.Debit;
 import net.jrkatz.minero.budget.period.MonthlyPeriodDefinition;
 
 import org.joda.time.LocalDate;
@@ -44,15 +40,13 @@ public class Lander extends AppCompatActivity {
     private BudgetPeriod mBudgetPeriod;
 
     private void refreshBudget() {
-        try(SQLiteDatabase db = new BudgetDbHelper(this).getReadableDatabase()) {
-            mBudgetPeriod = BudgetPeriod.loadBudgetPeriod(
-                    db,
-                    new Budget(new MonthlyPeriodDefinition(1),
-                            400,
-                            "default"
-                    ),
-                    new MonthlyPeriodDefinition(1).periodForDate(LocalDate.now()));
-        }
+        mBudgetPeriod = new BudgetDbHelper(this).loadBudgetPeriod(
+                new Budget(new MonthlyPeriodDefinition(1),
+                        400,
+                        "default"
+                ),
+                new MonthlyPeriodDefinition(1).periodForDate(LocalDate.now())
+        );
         renderBudget();
     }
 
@@ -84,12 +78,10 @@ public class Lander extends AppCompatActivity {
                 switch(actionId) {
                     case EditorInfo.IME_ACTION_DONE:
                         final int value = Integer.parseInt(spendAmt.getText().toString());
-                        try(SQLiteDatabase db = new BudgetDbHelper(lander).getWritableDatabase()) {
-                            Debit.createDebit(db, value, "test", LocalDateTime.now());
-                            spendAmt.setText("");
-                            lander.refreshBudget(); //this is obviously inefficient but it's easy
-                            return false;
-                        }
+                        new BudgetDbHelper(lander).createDebit(value, "test", LocalDateTime.now());
+                        spendAmt.setText("");
+                        lander.refreshBudget();
+                        return false;
                 }
                 return true;
             }

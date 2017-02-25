@@ -69,7 +69,7 @@ public class BudgetPeriod implements Parcelable {
         mDebits = ImmutableList.copyOf(debits);
     }
 
-    public static final BudgetPeriod loadBudgetPeriod(SQLiteDatabase db, Budget budget, Period period) {
+    protected static final BudgetPeriod loadBudgetPeriod(SQLiteDatabase db, Budget budget, Period period) {
         final ImmutableList.Builder<Debit> debits = ImmutableList.builder();
         long remaining = budget.getDistribution();
         for(final Debit debit : Debit.readDebits(db, period)) {

@@ -43,11 +43,11 @@ public class Debit implements Parcelable {
     private static final String TABLE_NAME = "debit";
 
     private final long mId;
-    private final int mAmount;
+    private final long mAmount;
     private final String mDescription;
     private final LocalDateTime mTime;
 
-    private Debit(long id, int amount, String description, LocalDateTime time) {
+    private Debit(long id, long amount, String description, LocalDateTime time) {
         this.mId = id;
         this.mAmount = amount;
         this.mDescription = description;
@@ -86,7 +86,7 @@ public class Debit implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(mId);
-        dest.writeInt(mAmount);
+        dest.writeLong(mAmount);
         dest.writeString(mDescription);
         dest.writeLong(mTime.toDate().getTime());
     }
@@ -104,7 +104,8 @@ public class Debit implements Parcelable {
                 whereArgs,
                 null, null, null);
     }
-    public static ImmutableList<Debit> readDebits(final SQLiteDatabase db, final Period period) {
+
+    protected static ImmutableList<Debit> readDebits(final SQLiteDatabase db, final Period period) {
         final LocalTime startOfDay = new LocalTime(0,0);
         return readDebits(db,
                 period.getStart().toLocalDateTime(startOfDay),
@@ -112,7 +113,7 @@ public class Debit implements Parcelable {
         );
     }
 
-    public static ImmutableList<Debit> readDebits(final SQLiteDatabase db,
+    protected static ImmutableList<Debit> readDebits(final SQLiteDatabase db,
                                                   final LocalDateTime start,
                                                   final LocalDateTime end) {
         ImmutableList.Builder<Debit> debits = ImmutableList.builder();
@@ -128,8 +129,8 @@ public class Debit implements Parcelable {
         return debits.build();
     }
 
-    public static Debit createDebit(final SQLiteDatabase db,
-                                    final int amount,
+    protected static Debit createDebit(final SQLiteDatabase db,
+                                    final long amount,
                                     final String description,
                                     final LocalDateTime time) throws SQLiteException {
         db.beginTransaction();
@@ -146,7 +147,7 @@ public class Debit implements Parcelable {
 
     protected Debit(Parcel in) {
         mId = in.readLong();
-        mAmount = in.readInt();
+        mAmount = in.readLong();
         mDescription = in.readString();
         mTime = LocalDateTime.fromDateFields(new Date(in.readLong()));
     }
