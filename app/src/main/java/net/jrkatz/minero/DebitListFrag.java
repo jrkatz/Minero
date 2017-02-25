@@ -19,13 +19,14 @@
 package net.jrkatz.minero;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import net.jrkatz.minero.budget.Debit;
@@ -35,56 +36,25 @@ import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link DebitListFrag#newInstance} factory method to
- * create an instance of this fragment.
  */
-public class DebitListFrag extends Fragment {
-    private static final String ARG_DEBITS = "debits";
-
+public class DebitListFrag extends ScrollView {
     private ArrayList<Debit> mDebits;
     private DebitsAdapter mAdapter;
 
-    public DebitListFrag() {
-        // Required empty public constructor
+    public DebitListFrag(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        View.inflate(context, R.layout.fragment_debit_list, this);
     }
 
-    public void updateDebits(ArrayList<Debit> debits) {
-        mAdapter.clear();
-        mAdapter.addAll(debits);
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param debits Parameter 1.
-     * @return A new instance of fragment DebitListFrag.
-     */
-    public static DebitListFrag newInstance(ArrayList<Debit> debits) {
-        DebitListFrag fragment = new DebitListFrag();
-        Bundle args = new Bundle();
-        args.putParcelableArrayList(ARG_DEBITS, debits);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mDebits = getArguments().getParcelableArrayList(ARG_DEBITS);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_debit_list, container, false);
-        ListView list = (ListView) view.findViewById(R.id.debit_list);
+    public void bind(ArrayList<Debit> debits) {
+        mDebits = debits;
         mAdapter = new DebitsAdapter(getContext(), mDebits);
+        updateView();
+    }
+
+    public void updateView() {
+        ListView list = (ListView) findViewById(R.id.debit_list);
         list.setAdapter(mAdapter);
-        return view;
     }
 
     private static class DebitsAdapter extends ArrayAdapter<Debit> {

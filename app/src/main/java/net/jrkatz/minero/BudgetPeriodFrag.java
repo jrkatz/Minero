@@ -18,7 +18,6 @@
 
 package net.jrkatz.minero;
 
-import android.app.FragmentManager;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -27,7 +26,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import net.jrkatz.minero.budget.BudgetPeriod;
-import net.jrkatz.minero.budget.Debit;
 
 import org.joda.time.LocalDate;
 
@@ -72,18 +70,10 @@ public class BudgetPeriodFrag extends Fragment {
     }
 
     private void renderBudgetPeriod() {
-        FragmentManager fragmentManager = getChildFragmentManager();
-        DebitListFrag debitListFragment = (DebitListFrag) fragmentManager.findFragmentByTag("debit_list");
-
-        final ArrayList<Debit> debits = new ArrayList<>(mBudgetPeriod.getDebits());
-        if (debitListFragment == null) {
-            final DebitListFrag debitListFrag = DebitListFrag.newInstance(debits);
-            getChildFragmentManager().beginTransaction().add(R.id.debit_list_fragment, debitListFrag, "debit_list").commit();
-        }
-        else {
-            debitListFragment.updateDebits(debits);
-        }
         final View v = getView();
+        final DebitListFrag debitList = (DebitListFrag) v.findViewById(R.id.debit_list_fragment);
+        debitList.bind(new ArrayList<>(mBudgetPeriod.getDebits()));
+
         final TextView remainingAmt = (TextView) v.findViewById(R.id.remainingAmt);
         remainingAmt.setText(Long.toString(mBudgetPeriod.getRemaining()));
 
