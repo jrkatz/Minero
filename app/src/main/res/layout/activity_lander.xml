@@ -18,13 +18,13 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/my_toolbar"
-        android:weightSum="1">
+        android:weightSum="1"
+        android:layout_below="@+id/my_toolbar">
 
         <net.jrkatz.minero.BudgetPeriodView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/budgetPeriod"/>
+            android:id="@+id/budget_period"/>
 
         <EditText
             android:layout_width="match_parent"
@@ -34,10 +34,10 @@
             android:layout_below="@+id/remainingAmt"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="65dp"
-            android:id="@+id/spendAmt"
             android:hint="@string/spend"
             android:selectAllOnFocus="true"
-            android:imeOptions="actionDone"/>
+            android:imeOptions="actionDone"
+            android:id="@+id/spend_amt"/>
     </LinearLayout>
 
 </RelativeLayout>

@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">minero</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="currency_prefix">$</string>
-    <string name="currency_postfix"></string>
+    <string name="currency_symbol">$</string>
+    <!-- string 1 is currency symbol, string 2 currency value -->
+    <string name="currency_fmt">%1$s%2$s</string>
     <string name="spend">spend</string>
     <string name="ymd_format">YYYY-MM-dd</string>
     <string name="range_format">%1$s to %2$s</string>

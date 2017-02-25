@@ -19,6 +19,7 @@
 package net.jrkatz.minero;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -50,8 +51,13 @@ public class BudgetPeriodView extends FrameLayout {
         final DebitListView debitList = (DebitListView) findViewById(R.id.debit_list_fragment);
         debitList.bind(new ArrayList<>(mBudgetPeriod.getDebits()));
 
-        final TextView remainingAmt = (TextView) findViewById(R.id.remainingAmt);
-        remainingAmt.setText(Long.toString(mBudgetPeriod.getRemaining()));
+        final TextView remainingAmt = (TextView) findViewById(R.id.remaining_amt);
+        Resources r = getResources();
+        String remainingStr = String.format(r.getString(R.string.currency_fmt),
+                r.getString(R.string.currency_symbol),
+                Long.toString(mBudgetPeriod.getRemaining()));
+
+        remainingAmt.setText(remainingStr);
 
         final TextView periodView = (TextView) findViewById(R.id.period);
         final LocalDate end = mBudgetPeriod.getPeriod().getEnd();

@@ -49,7 +49,7 @@ public class Lander extends AppCompatActivity {
     }
 
     private void renderBudget() {
-        BudgetPeriodView budgetPeriodView = (BudgetPeriodView) findViewById(R.id.budgetPeriod);
+        BudgetPeriodView budgetPeriodView = (BudgetPeriodView) findViewById(R.id.budget_period);
         budgetPeriodView.bind(mBudgetPeriod);
     }
 
@@ -62,7 +62,7 @@ public class Lander extends AppCompatActivity {
 
         refreshBudget();
         final Lander lander = this;
-        final EditText spendAmt = (EditText)findViewById(R.id.spendAmt);
+        final EditText spendAmt = (EditText)findViewById(R.id.spend_amt);
         spendAmt.setOnEditorActionListener(new EditText.OnEditorActionListener(){
             @Override
             public boolean onEditorAction(TextView spendAmt, int actionId, KeyEvent event) {
@@ -82,7 +82,7 @@ public class Lander extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        final EditText spendAmt = (EditText)findViewById(R.id.spendAmt);
+        final EditText spendAmt = (EditText)findViewById(R.id.spend_amt);
         spendAmt.requestFocus();
     }
 }

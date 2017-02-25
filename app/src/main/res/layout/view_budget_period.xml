@@ -20,31 +20,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
-    <LinearLayout
-        android:orientation="horizontal"
+    <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/currencyPrefix"
-            android:layout_weight="1"
-            android:text="@string/currency_prefix" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/remainingAmt"
-            android:layout_weight="1" />
-
-        <TextView
-            android:text="@string/currency_postfix"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/currencyPostfix"
-            android:layout_weight="1" />
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        android:id="@+id/remaining_amt"/>
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
