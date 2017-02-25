@@ -19,7 +19,6 @@
 package net.jrkatz.minero;
 
 import android.content.Context;
-import android.app.Fragment;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,15 +34,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A ScrollView subclass for displaying lists of Debit actions
  */
-public class DebitListFrag extends ScrollView {
+public class DebitListView extends ScrollView {
     private ArrayList<Debit> mDebits;
     private DebitsAdapter mAdapter;
 
-    public DebitListFrag(Context context, AttributeSet attrs) {
+    public DebitListView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        View.inflate(context, R.layout.fragment_debit_list, this);
+        View.inflate(context, R.layout.view_debit_list, this);
     }
 
     public void bind(ArrayList<Debit> debits) {

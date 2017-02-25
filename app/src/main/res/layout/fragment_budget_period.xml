@@ -61,12 +61,12 @@
             android:id="@+id/period"
             android:layout_weight="0.01" />
 
-        <net.jrkatz.minero.DebitListFrag
+        <net.jrkatz.minero.DebitListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/debit_list_fragment">
 
-        </net.jrkatz.minero.DebitListFrag>
+        </net.jrkatz.minero.DebitListView>
 
     </LinearLayout>
 

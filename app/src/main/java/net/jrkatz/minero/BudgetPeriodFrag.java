@@ -40,7 +40,7 @@ public class BudgetPeriodFrag extends Fragment {
     private static final String ARG_BUDGET_PERIOD = "budgetPeriod";
 
     private BudgetPeriod mBudgetPeriod;
-    private DebitListFrag mDebitListFragment;
+    private DebitListView mDebitListFragment;
 
     public BudgetPeriodFrag() {
         // Required empty public constructor
@@ -71,7 +71,7 @@ public class BudgetPeriodFrag extends Fragment {
 
     private void renderBudgetPeriod() {
         final View v = getView();
-        final DebitListFrag debitList = (DebitListFrag) v.findViewById(R.id.debit_list_fragment);
+        final DebitListView debitList = (DebitListView) v.findViewById(R.id.debit_list_fragment);
         debitList.bind(new ArrayList<>(mBudgetPeriod.getDebits()));
 
         final TextView remainingAmt = (TextView) v.findViewById(R.id.remainingAmt);
