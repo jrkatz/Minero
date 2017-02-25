@@ -21,11 +21,10 @@
         android:layout_below="@+id/my_toolbar"
         android:weightSum="1">
 
-        <FrameLayout
+        <net.jrkatz.minero.BudgetPeriodFrag
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/budget_period_fragment"
-            android:layout_weight="0.69" />
+            android:id="@+id/budgetPeriod"/>
 
         <EditText
             android:layout_width="match_parent"

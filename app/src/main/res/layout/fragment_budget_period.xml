@@ -15,59 +15,45 @@
   ~     You should have received a copy of the GNU General Public License
   ~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="net.jrkatz.minero.BudgetPeriodFrag">
-
-    <!-- TODO: Update blank fragment layout -->
-
+    android:orientation="vertical"
+    >
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="159dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/currencyPrefix"
-                android:layout_weight="1"
-                android:text="@string/currency_prefix" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/remainingAmt"
-                android:layout_weight="1" />
-
-            <TextView
-                android:text="@string/currency_postfix"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/currencyPostfix"
-                android:layout_weight="1" />
-        </LinearLayout>
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="62dp"
-            android:id="@+id/period"
-            android:layout_weight="0.01" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/currencyPrefix"
+            android:layout_weight="1"
+            android:text="@string/currency_prefix" />
 
-        <net.jrkatz.minero.DebitListView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/debit_list_fragment">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/remainingAmt"
+            android:layout_weight="1" />
 
-        </net.jrkatz.minero.DebitListView>
-
+        <TextView
+            android:text="@string/currency_postfix"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/currencyPostfix"
+            android:layout_weight="1" />
     </LinearLayout>
 
-</FrameLayout>
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="62dp"
+        android:id="@+id/period"
+        android:layout_weight="0.01" />
+
+    <net.jrkatz.minero.DebitListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/debit_list_fragment"/>
+</LinearLayout>

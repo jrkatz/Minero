@@ -18,7 +18,6 @@
 
 package net.jrkatz.minero;
 
-import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -36,7 +35,6 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
 public class Lander extends AppCompatActivity {
-
     private BudgetPeriod mBudgetPeriod;
 
     private void refreshBudget() {
@@ -51,15 +49,8 @@ public class Lander extends AppCompatActivity {
     }
 
     private void renderBudget() {
-        final FragmentManager fragmentManager = getFragmentManager();
-        BudgetPeriodFrag budgetPeriodFrag = (BudgetPeriodFrag) fragmentManager.findFragmentByTag("budget_period");
-        if(budgetPeriodFrag != null) {
-            budgetPeriodFrag.updateBudgetPeriod(mBudgetPeriod);
-        }
-        else {
-            budgetPeriodFrag = BudgetPeriodFrag.newInstance(mBudgetPeriod);
-            getFragmentManager().beginTransaction().add(R.id.budget_period_fragment, budgetPeriodFrag, "budget_period").commit();
-        }
+        BudgetPeriodFrag budgetPeriodView = (BudgetPeriodFrag) findViewById(R.id.budgetPeriod);
+        budgetPeriodView.bind(mBudgetPeriod);
     }
 
     @Override
