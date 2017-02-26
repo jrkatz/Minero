@@ -26,7 +26,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import net.jrkatz.minero.budget.Debit;
@@ -42,8 +41,7 @@ public class DebitListView extends ListView {
     private DebitsAdapter mAdapter;
 
     public DebitListView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        //View.inflate(context, R.layout.view_debit_list, this);
+        super(context, attrs, R.attr.debitListViewStyle);
     }
 
     public void bind(ArrayList<Debit> debits) {
@@ -53,7 +51,6 @@ public class DebitListView extends ListView {
     }
 
     public void updateView() {
-        //ListView list = (ListView) findViewById(R.id.debit_list);
         this.setAdapter(mAdapter);
     }
 
