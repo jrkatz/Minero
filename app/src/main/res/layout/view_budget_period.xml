@@ -15,24 +15,28 @@
   ~     You should have received a copy of the GNU General Public License
   ~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     >
     <TextView
+        android:layout_alignParentTop="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/remaining_amt"/>
+        android:id="@+id/remaining_amt"
+        android:textSize="@dimen/remaining_text_font_size"/>
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="62dp"
-        android:id="@+id/period"
-        android:layout_weight="0.01" />
+        android:layout_below="@id/remaining_amt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/period"/>
 
     <net.jrkatz.minero.DebitListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_below="@id/period"
+        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fillViewport="true"
         android:id="@+id/debit_list_fragment"/>
-</LinearLayout>
+</RelativeLayout>

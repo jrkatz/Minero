@@ -6,38 +6,29 @@
     android:layout_height="match_parent"
     tools:context="net.jrkatz.minero.Lander">
     <android.support.v7.widget.Toolbar
-        android:id="@+id/my_toolbar"
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
-        </android.support.v7.widget.Toolbar>
+    </android.support.v7.widget.Toolbar>
 
-    <LinearLayout
-        android:orientation="vertical"
+    <EditText
+        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:weightSum="1"
-        android:layout_below="@+id/my_toolbar">
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:hint="@string/spend"
+        android:selectAllOnFocus="true"
+        android:imeOptions="actionDone"
+        android:id="@+id/spend_amt"/>
 
-        <net.jrkatz.minero.BudgetPeriodView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/budget_period"/>
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:ems="10"
-            android:layout_below="@+id/remainingAmt"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="65dp"
-            android:hint="@string/spend"
-            android:selectAllOnFocus="true"
-            android:imeOptions="actionDone"
-            android:id="@+id/spend_amt"/>
-    </LinearLayout>
+    <net.jrkatz.minero.BudgetPeriodView
+        android:layout_below="@id/toolbar"
+        android:layout_above="@id/spend_amt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/budget_period"/>
 
 </RelativeLayout>

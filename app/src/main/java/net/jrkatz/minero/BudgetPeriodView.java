@@ -52,8 +52,8 @@ public class BudgetPeriodView extends FrameLayout {
         debitList.bind(new ArrayList<>(mBudgetPeriod.getDebits()));
 
         final TextView remainingAmt = (TextView) findViewById(R.id.remaining_amt);
-        Resources r = getResources();
-        String remainingStr = String.format(r.getString(R.string.currency_fmt),
+        final Resources r = getResources();
+        final String remainingStr = String.format(r.getString(R.string.currency_fmt),
                 r.getString(R.string.currency_symbol),
                 Long.toString(mBudgetPeriod.getRemaining()));
 
@@ -61,7 +61,8 @@ public class BudgetPeriodView extends FrameLayout {
 
         final TextView periodView = (TextView) findViewById(R.id.period);
         final LocalDate end = mBudgetPeriod.getPeriod().getEnd();
-        final String untilDateString = String.format(getResources().getString(R.string.until_date_format), end.toString(getResources().getString(R.string.ymd_format)));
+        final String untilDateString = String.format(getResources().getString(R.string.until_date_format),
+                end.toString(getResources().getString(R.string.ymd_format)));
         periodView.setText(untilDateString);
     }
 }

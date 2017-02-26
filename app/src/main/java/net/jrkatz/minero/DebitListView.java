@@ -19,6 +19,7 @@
 package net.jrkatz.minero;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,13 +37,13 @@ import java.util.List;
 /**
  * A ScrollView subclass for displaying lists of Debit actions
  */
-public class DebitListView extends ScrollView {
+public class DebitListView extends ListView {
     private ArrayList<Debit> mDebits;
     private DebitsAdapter mAdapter;
 
     public DebitListView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        View.inflate(context, R.layout.view_debit_list, this);
+        //View.inflate(context, R.layout.view_debit_list, this);
     }
 
     public void bind(ArrayList<Debit> debits) {
@@ -52,11 +53,11 @@ public class DebitListView extends ScrollView {
     }
 
     public void updateView() {
-        ListView list = (ListView) findViewById(R.id.debit_list);
-        list.setAdapter(mAdapter);
+        //ListView list = (ListView) findViewById(R.id.debit_list);
+        this.setAdapter(mAdapter);
     }
 
-    private static class DebitsAdapter extends ArrayAdapter<Debit> {
+    private class DebitsAdapter extends ArrayAdapter<Debit> {
         public DebitsAdapter(Context context, List<Debit> debits) {
             super(context, 0, debits);
         }
@@ -71,7 +72,12 @@ public class DebitListView extends ScrollView {
             final TextView description = (TextView) view.findViewById(R.id.description);
             final TextView time = (TextView) view.findViewById(R.id.time);
 
-            amount.setText(Long.toString(debit.getAmount()));
+            final Resources r = getResources();
+            final String amountStr = String.format(r.getString(R.string.currency_fmt),
+                    r.getString(R.string.currency_symbol),
+                    Long.toString(debit.getAmount()));
+
+            amount.setText(amountStr);
             description.setText(debit.getDescription());
             time.setText(debit.getTime().toString());
             return view;
