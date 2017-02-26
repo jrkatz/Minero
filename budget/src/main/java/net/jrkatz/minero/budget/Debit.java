@@ -145,6 +145,13 @@ public class Debit implements Parcelable {
         return new Debit(id, amount, description, time);
     }
 
+    protected static void clearDebits(final SQLiteDatabase db) {
+        db.beginTransaction();
+        db.delete(TABLE_NAME, null, new String[0]);
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
     protected Debit(Parcel in) {
         mId = in.readLong();
         mAmount = in.readLong();

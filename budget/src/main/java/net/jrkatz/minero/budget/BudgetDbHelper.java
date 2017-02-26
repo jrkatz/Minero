@@ -68,4 +68,8 @@ public class BudgetDbHelper extends SQLiteOpenHelper {
     public final BudgetPeriod loadBudgetPeriod(final Budget budget, final Period period) {
         return BudgetPeriod.loadBudgetPeriod(getWritableDatabase(), budget, period);
     }
+
+    public void clearDebits() {
+        Debit.clearDebits(getWritableDatabase());
+    }
 }
