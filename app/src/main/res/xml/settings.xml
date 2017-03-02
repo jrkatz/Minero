@@ -18,24 +18,31 @@
   -->
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <EditTextPreference
-        android:key="monthly_amt"
-        android:title="Monthly Amount"
-        android:summary="Monthly size of the budget"
-        android:inputType="number"
-        android:defaultValue="400"
-        />
-    <EditTextPreference
-        android:key="currency_symbol"
-        android:title="Currency Symbol"
-        android:defaultValue="@string/currency_symbol"/>
-    <CheckBoxPreference
-        android:key="currency_symbol_right"
-        android:title="Currency Symbol on Right"
-        android:defaultValue="false"/>
-    <net.jrkatz.minero.ClearDataPreference
-        android:title="Reset data"
-        android:dialogMessage="Are you sure you wish to reset your data? All debits will be lost"
-        android:positiveButtonText="Reset Data"
-        android:negativeButtonText="Cancel"/>
+    <PreferenceCategory
+        android:title="Budget Settings"
+        android:key="budget_settings">
+        <EditTextPreference
+            android:key="monthly_amt"
+            android:title="Monthly Amount"
+            android:summary="Monthly size of the budget"
+            android:inputType="number"
+            android:defaultValue="400"/>
+        <EditTextPreference
+            android:key="currency_symbol"
+            android:title="Currency Symbol"
+            android:defaultValue="@string/currency_symbol"/>
+        <CheckBoxPreference
+            android:key="currency_symbol_right"
+            android:title="Currency Symbol on Right"
+            android:defaultValue="false"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Other settings"
+        android:key="other_settings">
+        <net.jrkatz.minero.ClearDataPreference
+            android:title="Reset data"
+            android:dialogMessage="Are you sure you wish to reset your data? All debits will be lost"
+            android:positiveButtonText="Reset Data"
+            android:negativeButtonText="Cancel"/>
+    </PreferenceCategory>
 </PreferenceScreen>
