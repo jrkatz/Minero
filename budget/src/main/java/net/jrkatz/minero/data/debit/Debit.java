@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.jrkatz.minero.budget.debit;
+package net.jrkatz.minero.data.debit;
 
 import android.os.Parcel;
 import android.os.Parcelable;

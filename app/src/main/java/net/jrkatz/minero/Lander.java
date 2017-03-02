@@ -29,14 +29,10 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import net.jrkatz.minero.budget.budget.Budget;
-import net.jrkatz.minero.budget.BudgetDbHelper;
-import net.jrkatz.minero.budget.budgetPeriod.BudgetPeriod;
-import net.jrkatz.minero.budget.budgetPeriod.BudgetPeriodProvider;
-import net.jrkatz.minero.budget.debit.DebitProvider;
-import net.jrkatz.minero.budget.period.MonthlyPeriodDefinition;
+import net.jrkatz.minero.data.budgetPeriod.BudgetPeriod;
+import net.jrkatz.minero.data.budgetPeriod.BudgetPeriodProvider;
+import net.jrkatz.minero.data.debit.DebitProvider;
 
-import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
 public class Lander extends AppCompatActivity {

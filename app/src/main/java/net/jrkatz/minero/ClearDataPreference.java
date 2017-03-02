@@ -22,7 +22,7 @@ import android.content.Context;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 
-import net.jrkatz.minero.budget.debit.DebitProvider;
+import net.jrkatz.minero.data.debit.DebitProvider;
 
 /**
  * @Author jrkatz

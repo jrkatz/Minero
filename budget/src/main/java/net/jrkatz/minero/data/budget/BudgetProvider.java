@@ -16,12 +16,12 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.jrkatz.minero.budget.budget;
+package net.jrkatz.minero.data.budget;
 
 import android.content.Context;
 
-import net.jrkatz.minero.budget.BudgetDbHelper;
-import net.jrkatz.minero.budget.period.MonthlyPeriodDefinition;
+import net.jrkatz.minero.data.BudgetDbHelper;
+import net.jrkatz.minero.data.period.MonthlyPeriodDefinition;
 
 /**
  * @Author jrkatz

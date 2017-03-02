@@ -16,12 +16,10 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.jrkatz.minero.budget.period;
+package net.jrkatz.minero.data.period;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import net.jrkatz.minero.budget.R;
 
 import org.joda.time.LocalDate;
 

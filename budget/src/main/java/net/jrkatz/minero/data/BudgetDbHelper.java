@@ -16,17 +16,11 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.jrkatz.minero.budget;
+package net.jrkatz.minero.data;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import com.google.common.collect.ImmutableList;
-
-import net.jrkatz.minero.budget.period.Period;
-
-import org.joda.time.LocalDateTime;
 
 /**
  * @Author jrkatz

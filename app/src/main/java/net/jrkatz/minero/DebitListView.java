@@ -28,7 +28,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import net.jrkatz.minero.budget.debit.Debit;
+import net.jrkatz.minero.data.debit.Debit;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.jrkatz.minero.budget.debit;
+package net.jrkatz.minero.data.debit;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -26,8 +26,8 @@ import android.database.sqlite.SQLiteException;
 
 import com.google.common.collect.ImmutableList;
 
-import net.jrkatz.minero.budget.BudgetDbHelper;
-import net.jrkatz.minero.budget.period.Period;
+import net.jrkatz.minero.data.BudgetDbHelper;
+import net.jrkatz.minero.data.period.Period;
 
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;

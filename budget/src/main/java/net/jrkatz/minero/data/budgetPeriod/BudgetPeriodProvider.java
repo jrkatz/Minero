@@ -16,17 +16,17 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.jrkatz.minero.budget.budgetPeriod;
+package net.jrkatz.minero.data.budgetPeriod;
 
 import android.content.Context;
 
 import com.google.common.collect.ImmutableList;
 
-import net.jrkatz.minero.budget.budget.Budget;
-import net.jrkatz.minero.budget.budget.BudgetProvider;
-import net.jrkatz.minero.budget.debit.Debit;
-import net.jrkatz.minero.budget.debit.DebitProvider;
-import net.jrkatz.minero.budget.period.Period;
+import net.jrkatz.minero.data.budget.Budget;
+import net.jrkatz.minero.data.budget.BudgetProvider;
+import net.jrkatz.minero.data.debit.Debit;
+import net.jrkatz.minero.data.debit.DebitProvider;
+import net.jrkatz.minero.data.period.Period;
 
 import org.joda.time.LocalDate;
 
