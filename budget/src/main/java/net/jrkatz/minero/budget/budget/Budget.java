@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.jrkatz.minero.budget;
+package net.jrkatz.minero.budget.budget;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -48,6 +48,10 @@ public class Budget implements Parcelable {
     }
     public long getDistribution() {
         return mDistribution;
+    }
+
+    public PeriodDefinition getPeriodDefinition() {
+        return mPeriodDefinition;
     }
 
     public static final Creator<Budget> CREATOR = new Creator<Budget>() {

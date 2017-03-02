@@ -16,24 +16,27 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.jrkatz.minero.budget.period;
+package net.jrkatz.minero.budget.budget;
 
-import android.os.Parcelable;
+import android.content.Context;
 
-import org.joda.time.LocalDate;
+import net.jrkatz.minero.budget.BudgetDbHelper;
+import net.jrkatz.minero.budget.period.MonthlyPeriodDefinition;
 
 /**
  * @Author jrkatz
- * @Date 2/19/2017.
+ * @Date 3/1/2017.
  */
-public abstract class PeriodDefinition implements Parcelable {
-    public abstract Period periodForDate(final LocalDate date);
-
-    public final Period nextPeriod(final Period period) {
-        return periodForDate(period.getEnd());
+public class BudgetProvider {
+    private BudgetDbHelper mDbHelper;
+    public BudgetProvider(final Context context) {
+        mDbHelper = new BudgetDbHelper(context);
     }
 
-    public final Period previousPeriod(final Period period) {
-        return periodForDate(period.getStart().minusDays(1));
+    public Budget getBudget() {
+        return  new Budget(new MonthlyPeriodDefinition(1),
+                400,
+                "default"
+        );
     }
 }

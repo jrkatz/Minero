@@ -16,17 +16,17 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.jrkatz.minero.budget;
+package net.jrkatz.minero.budget.debit;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.google.common.collect.ImmutableList;
 
+import net.jrkatz.minero.budget.BudgetDbHelper;
 import net.jrkatz.minero.budget.period.Period;
 
 import org.joda.time.LocalDateTime;
@@ -36,65 +36,16 @@ import java.util.Date;
 
 /**
  * @Author jrkatz
- * @Date 2/19/2017.
+ * @Date 3/1/2017.
  */
-public class Debit implements Parcelable {
+
+public class DebitProvider {
     private static final String[] COLUMNS = new String[]{"id", "amount", "description", "time"};
     private static final String TABLE_NAME = "debit";
 
-    private final long mId;
-    private final long mAmount;
-    private final String mDescription;
-    private final LocalDateTime mTime;
-
-    private Debit(long id, long amount, String description, LocalDateTime time) {
-        this.mId = id;
-        this.mAmount = amount;
-        this.mDescription = description;
-        this.mTime = time;
-    }
-
-    public static final Creator<Debit> CREATOR = new Creator<Debit>() {
-        @Override
-        public Debit createFromParcel(Parcel in) {
-            return new Debit(in);
-        }
-
-        @Override
-        public Debit[] newArray(int size) {
-            return new Debit[size];
-        }
-    };
-
-    public long getAmount() {
-        return mAmount;
-    }
-
-    public String getDescription() {
-        return mDescription;
-    }
-
-    public LocalDateTime getTime() {
-        return mTime;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(mId);
-        dest.writeLong(mAmount);
-        dest.writeString(mDescription);
-        dest.writeLong(mTime.toDate().getTime());
-    }
-    private static Debit atCursor(final Cursor cursor) {
-        return new Debit(cursor.getLong(0),
-                cursor.getInt(1),
-                cursor.getString(2),
-                LocalDateTime.fromDateFields(new Date(cursor.getLong(3))));
+    private final BudgetDbHelper mDbHelper;
+    public DebitProvider(Context context) {
+        mDbHelper = new BudgetDbHelper(context);
     }
 
     private static Cursor debitQuery(SQLiteDatabase db, String where, String ... whereArgs) {
@@ -105,17 +56,20 @@ public class Debit implements Parcelable {
                 null, null, null);
     }
 
-    protected static ImmutableList<Debit> readDebits(final SQLiteDatabase db, final Period period) {
-        final LocalTime startOfDay = new LocalTime(0,0);
-        return readDebits(db,
-                period.getStart().toLocalDateTime(startOfDay),
-                period.getEnd().toLocalDateTime(startOfDay)
-        );
+    private static Debit atCursor(final Cursor cursor) {
+        return new Debit(cursor.getLong(0),
+                cursor.getInt(1),
+                cursor.getString(2),
+                LocalDateTime.fromDateFields(new Date(cursor.getLong(3))));
+    }
+
+    public ImmutableList<Debit> readDebits(final Period period) {
+        return readDebits(mDbHelper.getReadableDatabase(), period);
     }
 
     protected static ImmutableList<Debit> readDebits(final SQLiteDatabase db,
-                                                  final LocalDateTime start,
-                                                  final LocalDateTime end) {
+                                                     final LocalDateTime start,
+                                                     final LocalDateTime end) {
         ImmutableList.Builder<Debit> debits = ImmutableList.builder();
         try(Cursor cursor = debitQuery(db,
                 "time >= ? AND time < ?",
@@ -129,10 +83,21 @@ public class Debit implements Parcelable {
         return debits.build();
     }
 
+    protected static ImmutableList<Debit> readDebits(final SQLiteDatabase db, final Period period) {
+        final LocalTime startOfDay = new LocalTime(0,0);
+        return readDebits(db,
+                period.getStart().toLocalDateTime(startOfDay),
+                period.getEnd().toLocalDateTime(startOfDay)
+        );
+    }
+
+    public Debit createDebit(final int amount, final String description, final LocalDateTime time) {
+        return createDebit(mDbHelper.getWritableDatabase(), amount, description, time);
+    }
     protected static Debit createDebit(final SQLiteDatabase db,
-                                    final long amount,
-                                    final String description,
-                                    final LocalDateTime time) throws SQLiteException {
+                                       final long amount,
+                                       final String description,
+                                       final LocalDateTime time) throws SQLiteException {
         db.beginTransaction();
         ContentValues values = new ContentValues();
         values.put("amount", amount);
@@ -145,17 +110,13 @@ public class Debit implements Parcelable {
         return new Debit(id, amount, description, time);
     }
 
+    public void clearDebits() {
+        clearDebits(mDbHelper.getWritableDatabase());
+    }
     protected static void clearDebits(final SQLiteDatabase db) {
         db.beginTransaction();
         db.delete(TABLE_NAME, null, new String[0]);
         db.setTransactionSuccessful();
         db.endTransaction();
-    }
-
-    protected Debit(Parcel in) {
-        mId = in.readLong();
-        mAmount = in.readLong();
-        mDescription = in.readString();
-        mTime = LocalDateTime.fromDateFields(new Date(in.readLong()));
     }
 }

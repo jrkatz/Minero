@@ -16,15 +16,16 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.jrkatz.minero.budget;
+package net.jrkatz.minero.budget.budgetPeriod;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
 
+import net.jrkatz.minero.budget.budget.Budget;
+import net.jrkatz.minero.budget.debit.Debit;
 import net.jrkatz.minero.budget.period.Period;
 
 import java.util.ArrayList;
@@ -60,38 +61,6 @@ public class BudgetPeriod implements Parcelable {
         this.mDebits = debits;
     }
 
-    protected BudgetPeriod(Parcel in) {
-        mBudget = in.readParcelable(Budget.class.getClassLoader());
-        mPeriod = in.readParcelable(Period.class.getClassLoader());
-        mRemaining = in.readLong();
-        final ArrayList<Debit> debits = new ArrayList<>();
-        in.readTypedList(debits, Debit.CREATOR);
-        mDebits = ImmutableList.copyOf(debits);
-    }
-
-    protected static final BudgetPeriod loadBudgetPeriod(SQLiteDatabase db, Budget budget, Period period) {
-        final ImmutableList.Builder<Debit> debits = ImmutableList.builder();
-        long remaining = budget.getDistribution();
-        for(final Debit debit : Debit.readDebits(db, period)) {
-            debits.add(debit);
-            remaining -= debit.getAmount();
-        }
-
-        return new BudgetPeriod(budget, period, remaining, debits.build());
-    }
-
-    public static final Creator<BudgetPeriod> CREATOR = new Creator<BudgetPeriod>() {
-        @Override
-        public BudgetPeriod createFromParcel(Parcel in) {
-            return new BudgetPeriod(in);
-        }
-
-        @Override
-        public BudgetPeriod[] newArray(int size) {
-            return new BudgetPeriod[size];
-        }
-    };
-
     public long getRemaining() {
         return mRemaining;
     }
@@ -108,15 +77,6 @@ public class BudgetPeriod implements Parcelable {
         return mBudget;
     }
 
-    public BudgetPeriod spend(final Debit debit) {
-        return new BudgetPeriod(
-                mBudget,
-                mPeriod,
-                mRemaining - debit.getAmount(),
-                ImmutableList.<Debit>builder().addAll(mDebits).add(debit).build()
-        );
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -129,4 +89,25 @@ public class BudgetPeriod implements Parcelable {
         dest.writeLong(mRemaining);
         dest.writeTypedList(mDebits);
     }
+
+    protected BudgetPeriod(Parcel in) {
+        mBudget = in.readParcelable(Budget.class.getClassLoader());
+        mPeriod = in.readParcelable(Period.class.getClassLoader());
+        mRemaining = in.readLong();
+        final ArrayList<Debit> debits = new ArrayList<>();
+        in.readTypedList(debits, Debit.CREATOR);
+        mDebits = ImmutableList.copyOf(debits);
+    }
+
+    public static final Creator<BudgetPeriod> CREATOR = new Creator<BudgetPeriod>() {
+        @Override
+        public BudgetPeriod createFromParcel(Parcel in) {
+            return new BudgetPeriod(in);
+        }
+
+        @Override
+        public BudgetPeriod[] newArray(int size) {
+            return new BudgetPeriod[size];
+        }
+    };
 }

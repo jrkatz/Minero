@@ -56,20 +56,4 @@ public class BudgetDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
-
-    public ImmutableList<Debit> readDebits(final Period period) {
-        return Debit.readDebits(getReadableDatabase(), period);
-    }
-
-    public Debit createDebit(final int amount, final String description, final LocalDateTime time) {
-        return Debit.createDebit(getWritableDatabase(), amount, description, time);
-    }
-
-    public final BudgetPeriod loadBudgetPeriod(final Budget budget, final Period period) {
-        return BudgetPeriod.loadBudgetPeriod(getWritableDatabase(), budget, period);
-    }
-
-    public void clearDebits() {
-        Debit.clearDebits(getWritableDatabase());
-    }
 }

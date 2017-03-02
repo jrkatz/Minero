@@ -29,9 +29,11 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import net.jrkatz.minero.budget.Budget;
+import net.jrkatz.minero.budget.budget.Budget;
 import net.jrkatz.minero.budget.BudgetDbHelper;
-import net.jrkatz.minero.budget.BudgetPeriod;
+import net.jrkatz.minero.budget.budgetPeriod.BudgetPeriod;
+import net.jrkatz.minero.budget.budgetPeriod.BudgetPeriodProvider;
+import net.jrkatz.minero.budget.debit.DebitProvider;
 import net.jrkatz.minero.budget.period.MonthlyPeriodDefinition;
 
 import org.joda.time.LocalDate;
@@ -41,13 +43,7 @@ public class Lander extends AppCompatActivity {
     private BudgetPeriod mBudgetPeriod;
 
     private void refreshBudget() {
-        mBudgetPeriod = new BudgetDbHelper(this).loadBudgetPeriod(
-                new Budget(new MonthlyPeriodDefinition(1),
-                        400,
-                        "default"
-                ),
-                new MonthlyPeriodDefinition(1).periodForDate(LocalDate.now())
-        );
+        mBudgetPeriod = new BudgetPeriodProvider(this).loadBudgetPeriod();
         renderBudget();
     }
 
@@ -72,7 +68,7 @@ public class Lander extends AppCompatActivity {
                 switch(actionId) {
                     case EditorInfo.IME_ACTION_DONE:
                         final int value = Integer.parseInt(spendAmt.getText().toString());
-                        new BudgetDbHelper(lander).createDebit(value, "test", LocalDateTime.now());
+                        new DebitProvider(lander).createDebit(value, "test", LocalDateTime.now());
                         spendAmt.setText("");
                         lander.refreshBudget();
                         return false;

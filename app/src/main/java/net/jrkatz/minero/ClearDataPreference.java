@@ -22,7 +22,7 @@ import android.content.Context;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 
-import net.jrkatz.minero.budget.BudgetDbHelper;
+import net.jrkatz.minero.budget.debit.DebitProvider;
 
 /**
  * @Author jrkatz
@@ -38,7 +38,7 @@ public class ClearDataPreference extends DialogPreference{
     protected void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
         if (positiveResult) {
-            new BudgetDbHelper(getContext()).clearDebits();
+            new DebitProvider(getContext()).clearDebits();
         }
     }
 }
