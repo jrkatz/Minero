@@ -19,8 +19,9 @@
 package net.jrkatz.minero.data.budget;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
-import net.jrkatz.minero.data.BudgetDbHelper;
 import net.jrkatz.minero.data.period.MonthlyPeriodDefinition;
 
 /**
@@ -28,15 +29,14 @@ import net.jrkatz.minero.data.period.MonthlyPeriodDefinition;
  * @Date 3/1/2017.
  */
 public class BudgetProvider {
-    private BudgetDbHelper mDbHelper;
+    private SharedPreferences mPreferences;
     public BudgetProvider(final Context context) {
-        mDbHelper = new BudgetDbHelper(context);
+        mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     public Budget getBudget() {
-        return  new Budget(new MonthlyPeriodDefinition(1),
-                400,
-                "default"
-        );
+        return new Budget(new MonthlyPeriodDefinition(1),
+                Integer.parseInt(mPreferences.getString("monthly_amt", "400")),
+                "default");
     }
 }
