@@ -12,27 +12,18 @@
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
-        <!--
-        <item android:id="@+id/action_settings"
-            android:title="Settings"
-            android:showAsAction="never"
-            />
-            -->
     </android.support.v7.widget.Toolbar>
 
-    <EditText
+    <net.jrkatz.minero.DebitEntryView
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="number"
-        android:hint="@string/spend"
-        android:selectAllOnFocus="true"
-        android:imeOptions="actionDone"
-        android:id="@+id/spend_amt"/>
+        android:id="@+id/debit_entry"/>
 
     <net.jrkatz.minero.BudgetPeriodView
         android:layout_below="@id/toolbar"
-        android:layout_above="@id/spend_amt"
+        android:layout_above="@id/debit_entry"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/budget_period"/>

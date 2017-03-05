@@ -32,11 +32,11 @@ import java.util.Date;
 public class Debit implements Parcelable {
 
     private final long mId;
-    private final long mAmount;
+    private final int mAmount;
     private final String mDescription;
     private final LocalDateTime mTime;
 
-    protected Debit(long id, long amount, String description, LocalDateTime time) {
+    protected Debit(long id, int amount, String description, LocalDateTime time) {
         this.mId = id;
         this.mAmount = amount;
         this.mDescription = description;
@@ -55,7 +55,7 @@ public class Debit implements Parcelable {
         }
     };
 
-    public long getAmount() {
+    public int getAmount() {
         return mAmount;
     }
 
@@ -75,14 +75,14 @@ public class Debit implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(mId);
-        dest.writeLong(mAmount);
+        dest.writeInt(mAmount);
         dest.writeString(mDescription);
         dest.writeLong(mTime.toDate().getTime());
     }
 
     protected Debit(Parcel in) {
         mId = in.readLong();
-        mAmount = in.readLong();
+        mAmount = in.readInt();
         mDescription = in.readString();
         mTime = LocalDateTime.fromDateFields(new Date(in.readLong()));
     }

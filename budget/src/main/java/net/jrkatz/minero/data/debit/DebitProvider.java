@@ -95,7 +95,7 @@ public class DebitProvider {
         return createDebit(mDbHelper.getWritableDatabase(), amount, description, time);
     }
     protected static Debit createDebit(final SQLiteDatabase db,
-                                       final long amount,
+                                       final int amount,
                                        final String description,
                                        final LocalDateTime time) throws SQLiteException {
         db.beginTransaction();

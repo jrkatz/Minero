@@ -31,6 +31,7 @@ import android.widget.TextView;
 
 import net.jrkatz.minero.data.budgetPeriod.BudgetPeriod;
 import net.jrkatz.minero.data.budgetPeriod.BudgetPeriodProvider;
+import net.jrkatz.minero.data.debit.Debit;
 import net.jrkatz.minero.data.debit.DebitProvider;
 
 import org.joda.time.LocalDateTime;
@@ -56,20 +57,11 @@ public class Lander extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         refreshBudget();
-        final Lander lander = this;
-        final EditText spendAmt = (EditText)findViewById(R.id.spend_amt);
-        spendAmt.setOnEditorActionListener(new EditText.OnEditorActionListener(){
+        final DebitEntryView debitEntryView = (DebitEntryView) findViewById(R.id.debit_entry);
+        debitEntryView.setListener(new DebitEntryView.DebitCreationListener() {
             @Override
-            public boolean onEditorAction(TextView spendAmt, int actionId, KeyEvent event) {
-                switch(actionId) {
-                    case EditorInfo.IME_ACTION_DONE:
-                        final int value = Integer.parseInt(spendAmt.getText().toString());
-                        new DebitProvider(lander).createDebit(value, "test", LocalDateTime.now());
-                        spendAmt.setText("");
-                        lander.refreshBudget();
-                        return false;
-                }
-                return true;
+            public void onDebitCreated(Debit debit) {
+                refreshBudget();
             }
         });
     }
