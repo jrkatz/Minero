@@ -26,6 +26,7 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -74,7 +75,9 @@ public class DebitEntryView extends FrameLayout {
                         break;
                     case AMT_ENTRY:
                     default:
+                        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                         mSpendAmt.requestFocus();
+                        imm.showSoftInput(mSpendAmt, InputMethodManager.SHOW_IMPLICIT);
                         break;
                 }
             }
@@ -154,20 +157,12 @@ public class DebitEntryView extends FrameLayout {
 
     private void setupAmtEntry() {
         mSpendTag.setVisibility(View.GONE);
-        mSpendAmt.setWidth(LayoutParams.MATCH_PARENT);
         mSpendAmt.requestFocus();
     }
 
     private void setupTagEntry() {
         mSpendTag.setVisibility(View.VISIBLE);
         mSpendTag.requestFocus();
-        mSpendAmt.setWidth(LayoutParams.WRAP_CONTENT);
-    }
-
-    //I don't like how this plays with the two above...
-    private void setupInactive() {
-        mSpendTag.setVisibility(View.GONE);
-        mSpendAmt.setWidth(LayoutParams.MATCH_PARENT);
     }
 
     private void updateView() {
@@ -193,7 +188,8 @@ public class DebitEntryView extends FrameLayout {
 
         mSpendTag.setText("");
         mSpendAmt.setText("");
-        setupInactive();
+        mState = AMT_ENTRY;
+        updateView();
     }
 
     //I don't really like this model of effecting changes. I'd rather register
