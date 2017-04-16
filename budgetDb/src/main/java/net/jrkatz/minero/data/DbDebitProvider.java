@@ -78,6 +78,12 @@ public class DbDebitProvider extends DebitProvider<DbDataContext> {
         context.getDb().delete(TABLE_NAME, null, new String[0]);
     }
 
+    @Override
+    public boolean removeDebit(@NonNull DbDataContext context, long debitId) throws ProviderException {
+        final int result = context.getDb().delete("debit", "id = ?", new String[]{Long.toString(debitId)});
+        return result > 0;
+    }
+
     Cursor debitQuery(SQLiteDatabase db, String where, String ... whereArgs) {
         return db.query(TABLE_NAME,
                 COLUMNS,

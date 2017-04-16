@@ -58,6 +58,10 @@ public class Debit implements Parcelable {
         }
     };
 
+    public long getId() {
+        return mId;
+    }
+
     public int getAmount() {
         return mAmount;
     }

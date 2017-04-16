@@ -20,6 +20,8 @@ package net.jrkatz.minero;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,14 +41,20 @@ import java.util.List;
 public class DebitListView extends ListView {
     private ArrayList<Debit> mDebits;
     private DebitsAdapter mAdapter;
+    private ConfirmDebitRemoval mDebitRemoval;
 
     public DebitListView(Context context, AttributeSet attrs) {
         super(context, attrs, R.attr.debitListViewStyle);
     }
 
-    public void bind(ArrayList<Debit> debits) {
+    public interface ConfirmDebitRemoval {
+        void confirmDebitRemoval(@NonNull final Debit debit);
+    }
+
+    public void bind(final @NonNull ArrayList<Debit> debits, @Nullable final ConfirmDebitRemoval debitRemoval) {
         mDebits = debits;
         mAdapter = new DebitsAdapter(getContext(), mDebits);
+        mDebitRemoval = debitRemoval;
         updateView();
     }
 
@@ -63,20 +71,21 @@ public class DebitListView extends ListView {
         public View getView(int position, View view, ViewGroup parent) {
             final Debit debit = getItem(position);
             if (view == null) {
-                view = LayoutInflater.from(getContext()).inflate(R.layout.debit_list_item, parent, false);
+                view = new DebitView(getContext(), null);
             }
-            final TextView amount = (TextView) view.findViewById(R.id.amount);
-            final TextView description = (TextView) view.findViewById(R.id.description);
-            final TextView time = (TextView) view.findViewById(R.id.time);
 
-            final Resources r = getResources();
-            final String amountStr = String.format(r.getString(R.string.currency_fmt),
-                    r.getString(R.string.currency_symbol),
-                    Long.toString(debit.getAmount()));
+            ((DebitView) view).bind(debit);
 
-            amount.setText(amountStr);
-            description.setText(debit.getDescription());
-            time.setText(debit.getTime().toString());
+            view.setOnLongClickListener(new OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (mDebitRemoval == null) {
+                        return false;
+                    }
+                    mDebitRemoval.confirmDebitRemoval(debit);
+                    return true;
+                }
+            });
             return view;
         }
     }

@@ -31,10 +31,12 @@ import net.jrkatz.minero.data.Budget;
 import net.jrkatz.minero.data.BudgetPeriod;
 import net.jrkatz.minero.data.DataContextFactory;
 import net.jrkatz.minero.data.Debit;
+import net.jrkatz.minero.data.IDataChangeListener;
 import net.jrkatz.minero.data.IDataContext;
 import net.jrkatz.minero.data.ProviderException;
 
-public class Lander extends AppCompatActivity {
+public class Lander extends AppCompatActivity implements IDataChangeListener {
+
     private void refreshBudget() {
         BudgetPeriod budgetPeriod;
         try (final IDataContext providerContext = DataContextFactory.getDataContext(this)) {
@@ -52,7 +54,12 @@ public class Lander extends AppCompatActivity {
         final BudgetPeriodView budgetPeriodView = (BudgetPeriodView) findViewById(R.id.budget_period);
         final DebitEntryView debitEntryView = (DebitEntryView) findViewById(R.id.debit_entry);
         debitEntryView.bind(budgetPeriod.getBudgetId());
-        budgetPeriodView.bind(budgetPeriod);
+        budgetPeriodView.bind(budgetPeriod, new DebitListView.ConfirmDebitRemoval() {
+            @Override
+            public void confirmDebitRemoval(@NonNull final Debit debit) {
+                RemoveDebitFragment.newInstance(debit).show(getFragmentManager(), "remove_debit");
+            }
+        });
     }
 
     @Override
@@ -88,7 +95,13 @@ public class Lander extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        rerender();
         final EditText spendAmt = (EditText)findViewById(R.id.spend_amt);
+        spendAmt.requestFocus();
+    }
+
+    @Override
+    public void rerender() {
 
         refreshBudget();
         final DebitEntryView debitEntryView = (DebitEntryView) findViewById(R.id.debit_entry);
@@ -98,6 +111,5 @@ public class Lander extends AppCompatActivity {
                 refreshBudget();
             }
         });
-        spendAmt.requestFocus();
     }
 }

@@ -20,6 +20,8 @@ package net.jrkatz.minero;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -36,20 +38,23 @@ import java.util.ArrayList;
  */
 public class BudgetPeriodView extends FrameLayout {
     private BudgetPeriod mBudgetPeriod;
+    private DebitListView.ConfirmDebitRemoval mDebitRemoval;
 
     public BudgetPeriodView(Context context, AttributeSet attrs) {
         super(context, attrs);
         View.inflate(context, R.layout.view_budget_period, this);
     }
 
-    public void bind(final BudgetPeriod budgetPeriod) {
+    public void bind(@NonNull final BudgetPeriod budgetPeriod,
+                     @Nullable final DebitListView.ConfirmDebitRemoval debitRemoval) {
         mBudgetPeriod = budgetPeriod;
+        mDebitRemoval = debitRemoval;
         updateView();
     }
 
     public void updateView() {
         final DebitListView debitList = (DebitListView) findViewById(R.id.debit_list_fragment);
-        debitList.bind(new ArrayList<>(mBudgetPeriod.getDebits()));
+        debitList.bind(new ArrayList<>(mBudgetPeriod.getDebits()), mDebitRemoval);
 
         final TextView remainingAmt = (TextView) findViewById(R.id.remaining_amt);
         final Resources r = getResources();

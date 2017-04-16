@@ -43,4 +43,6 @@ public abstract class DebitProvider<ProviderContext extends IDataContext> {
                                                     final long budgetPeriodId) throws ProviderException;
 
     public abstract void clearDebits(@NonNull final ProviderContext context) throws ProviderException;
+
+    public abstract boolean removeDebit(@NonNull final ProviderContext context, final long debitId) throws ProviderException;
 }

@@ -14,4 +14,6 @@
     <string name="change_amt_to">Change amount to:</string>
     <string name="apply_retroactively">Apply retroactively:</string>
     <string name="edit_budget">Edit budget</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
 </resources>

@@ -7,8 +7,8 @@
     <dimen name="remaining_text_font_size">36pt</dimen>
     <!-- end BudgetPeriodView dimensions-->
 
-    <!-- debit_list_item dimensions -->
+    <!-- view_debit dimensions -->
     <dimen name="debit_amt_font_size">24sp</dimen>
     <dimen name="debit_detail_font_size">12sp</dimen>
-    <!-- end debit_list_item dimensions -->
+    <!-- end view_debit dimensions -->
 </resources>
