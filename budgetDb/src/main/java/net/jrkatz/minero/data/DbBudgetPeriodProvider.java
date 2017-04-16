@@ -69,6 +69,38 @@ public class DbBudgetPeriodProvider extends BudgetPeriodProvider<DbDataContext> 
         }
     }
 
+    @Nullable
+    @Override
+    public BudgetPeriod getBudgetPeriod(@NonNull DbDataContext context,
+                                        long budgetPeriodId) throws ProviderException {
+        try(final Cursor cursor = context.getDb().query(
+                "budget_period",
+                new String[] {"id", "budget_id", "distribution", "start", "end"},
+                "id = ?",
+                new String[] {Long.toString(budgetPeriodId)},
+                null,
+                null,
+                null)) {
+            if (cursor.moveToFirst()) {
+                return atCursor(context, cursor);
+            }
+            return null;
+        }
+    }
+
+    @NonNull
+    @Override
+    BudgetPeriod updateBudgetAmount(@NonNull DbDataContext context, long budgetPeriodId, long amount) throws ProviderException{
+        ContentValues values = new ContentValues();
+        values.put("distribution", amount);
+        context.getDb().update("budget_period",
+                values,
+                "id = ?",
+                new String[] {Long.toString(budgetPeriodId)});
+
+        return getBudgetPeriod(context, budgetPeriodId);
+    }
+
     @Override
     @Nullable
     public BudgetPeriod getLatestBudgetPeriod(@NonNull final DbDataContext context,

@@ -47,6 +47,10 @@ public abstract class BudgetPeriodProvider<ProviderContext extends IDataContext>
                                         final long budgetId,
                                         final LocalDate date) throws ProviderException;
 
+    @Nullable
+    public abstract BudgetPeriod getBudgetPeriod(@NonNull final ProviderContext context,
+                                                 final long budgetPeriodId) throws ProviderException;
+
     @NonNull
     public BudgetPeriod getCurrentBudgetPeriod(@NonNull final ProviderContext context,
                                                final long budgetId) throws ProviderException {
@@ -70,4 +74,9 @@ public abstract class BudgetPeriodProvider<ProviderContext extends IDataContext>
         }
         return budgetPeriod;
     }
+
+    @NonNull
+    abstract BudgetPeriod updateBudgetAmount(@NonNull final ProviderContext context,
+                                             final long budgetPeriodId,
+                                             final long amount) throws ProviderException;
 }

@@ -50,6 +50,20 @@ public class DbBudgetProvider extends BudgetProvider<DbDataContext> {
         }
     }
 
+    @NonNull
+    @Override
+    protected Budget setBudgetAmount(@NonNull DbDataContext context, long budgetId, long amount) {
+        final ContentValues values = new ContentValues();
+        values.put("distribution", amount);
+        context.getDb().update("budget",
+                values,
+                "id = ?",
+                new String[]{Long.toString(budgetId)}
+        );
+
+        return getBudget(context, budgetId);
+    }
+
     private static Budget atCursor(final Cursor cursor) {
         try {
             return new Budget(cursor.getLong(0), PeriodDefinition.deserialize(cursor.getString(1)), cursor.getLong(2), cursor.getString(3));
@@ -75,7 +89,7 @@ public class DbBudgetProvider extends BudgetProvider<DbDataContext> {
                                          @NonNull final PeriodDefinition periodDefinition,
                                          final long distribution,
                                          @NonNull final String name) {
-        ContentValues values = new ContentValues();
+        final ContentValues values = new ContentValues();
         values.put("distribution", distribution);
         values.put("name", name);
         values.put("period_definition", periodDefinition.serialize());

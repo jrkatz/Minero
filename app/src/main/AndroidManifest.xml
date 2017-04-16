@@ -15,6 +15,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Settings" />
+        <activity android:name=".BudgetEditActivity"></activity>
     </application>
 
 </manifest>

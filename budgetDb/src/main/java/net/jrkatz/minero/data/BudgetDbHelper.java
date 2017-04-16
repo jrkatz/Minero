@@ -28,7 +28,7 @@ import android.support.annotation.NonNull;
  * @Date 2/20/2017.
  */
 
-public class BudgetDbHelper extends SQLiteOpenHelper {
+class BudgetDbHelper extends SQLiteOpenHelper {
     private static final int DB_VERSION = 1;
     private static final String DB_NAME = "minero";
 

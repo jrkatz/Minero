@@ -36,4 +36,15 @@ public abstract class BudgetProvider<ProviderContext extends IDataContext> {
                                      final long id) throws ProviderException;
 
     public abstract Budget getDefaultBudget(@NonNull final ProviderContext context) throws ProviderException;
+
+    @NonNull protected abstract Budget setBudgetAmount(@NonNull final ProviderContext context, final long budgetId, final long amount);
+
+    @NonNull
+    public Budget updateBudgetAmount(@NonNull final ProviderContext context, final long budgetId, final long amount) throws ProviderException {
+        final Budget budget = setBudgetAmount(context, budgetId, amount);
+        final BudgetPeriodProvider bpp = context.getBudgetPeriodProvider();
+        final BudgetPeriod currentPeriod = bpp.getCurrentBudgetPeriod(context, budgetId);
+        bpp.updateBudgetAmount(context, currentPeriod.getId(), amount);
+        return budget;
+    }
 }

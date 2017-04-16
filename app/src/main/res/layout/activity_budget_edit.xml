@@ -17,19 +17,14 @@
   ~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <Preference android:title="@string/edit_budget">
-        <intent android:targetPackage="net.jrkatz.minero"
-            android:targetClass="net.jrkatz.minero.BudgetEditActivity"
-            />
-    </Preference>
-    <PreferenceCategory
-        android:title="Other settings"
-        android:key="other_settings">
-        <net.jrkatz.minero.ClearDataPreference
-            android:title="Reset data"
-            android:dialogMessage="Are you sure you wish to reset your data? All entries will be lost"
-            android:positiveButtonText="Reset Data"
-            android:negativeButtonText="Cancel"/>
-    </PreferenceCategory>
-</PreferenceScreen>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="net.jrkatz.minero.BudgetEditActivity">
+
+    <net.jrkatz.minero.BudgetEditView
+        android:id="@+id/edit_view"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent" />
+</android.support.constraint.ConstraintLayout>

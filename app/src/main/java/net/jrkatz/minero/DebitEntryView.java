@@ -154,7 +154,7 @@ public class DebitEntryView extends FrameLayout {
             }
         }
 
-        if (amt != null && amt >= 0) {
+        if (amt != null && amt > 0) {
             mSpendAmt.setText(amt.toString());
         }
         else {
