@@ -22,7 +22,8 @@ import android.content.Context;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 
-import net.jrkatz.minero.data.DbDataContext;
+import net.jrkatz.minero.data.DataContextFactory;
+import net.jrkatz.minero.data.IDataContext;
 import net.jrkatz.minero.data.ProviderException;
 
 /**
@@ -39,7 +40,7 @@ public class ClearDataPreference extends DialogPreference{
     protected void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
         if (positiveResult) {
-            try (final DbDataContext providerContext = new DbDataContext(getContext())) {
+            try (final IDataContext providerContext = DataContextFactory.getDataContext(getContext())) {
                 providerContext.getDebitProvider().clearDebits(providerContext);
                 providerContext.getBudgetPeriodProvider().clearBudgetPeriods(providerContext);
                 providerContext.markSuccessful();

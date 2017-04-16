@@ -29,7 +29,7 @@ import org.joda.time.DateTime;
  * @Date 4/16/2017.
  */
 
-public abstract class AbstractDebitProvider<ProviderContext extends IDataContext> {
+public abstract class DebitProvider<ProviderContext extends IDataContext> {
     @NonNull
     public abstract Debit createDebit(@NonNull final ProviderContext context,
                                       final long budgetId,

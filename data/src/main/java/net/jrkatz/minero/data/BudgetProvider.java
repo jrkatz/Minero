@@ -25,7 +25,7 @@ import android.support.annotation.NonNull;
  * @Date 4/16/2017.
  */
 
-public abstract class AbstractBudgetProvider<ProviderContext extends IDataContext> {
+public abstract class BudgetProvider<ProviderContext extends IDataContext> {
     @NonNull
     public abstract Budget createBudget(@NonNull final ProviderContext context,
                                       @NonNull final PeriodDefinition periodDefinition,

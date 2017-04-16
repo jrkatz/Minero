@@ -33,8 +33,9 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import net.jrkatz.minero.data.BudgetPeriod;
-import net.jrkatz.minero.data.DbDataContext;
+import net.jrkatz.minero.data.DataContextFactory;
 import net.jrkatz.minero.data.Debit;
+import net.jrkatz.minero.data.IDataContext;
 import net.jrkatz.minero.data.ProviderException;
 
 import org.joda.time.DateTime;
@@ -194,7 +195,7 @@ public class DebitEntryView extends FrameLayout {
         }
         final String tag = mSpendTag.getText().toString();
         final Debit debit;
-        try (final DbDataContext providerContext = new DbDataContext(getContext())) {
+        try (final IDataContext providerContext = DataContextFactory.getDataContext(getContext())) {
             final BudgetPeriod budgetPeriod = providerContext.getBudgetPeriodProvider().getCurrentBudgetPeriod(providerContext, mBudgetId);
             debit = providerContext.getDebitProvider().createDebit(
                     providerContext,

@@ -28,7 +28,7 @@ import org.joda.time.LocalDate;
  * @Date 4/16/2017.
  */
 
-public abstract class AbstractBudgetPeriodProvider<ProviderContext extends IDataContext> {
+public abstract class BudgetPeriodProvider<ProviderContext extends IDataContext> {
 
     public abstract void clearBudgetPeriods(@NonNull final ProviderContext context) throws ProviderException;
 

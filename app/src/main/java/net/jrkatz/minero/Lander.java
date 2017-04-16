@@ -29,14 +29,15 @@ import android.widget.EditText;
 
 import net.jrkatz.minero.data.Budget;
 import net.jrkatz.minero.data.BudgetPeriod;
-import net.jrkatz.minero.data.DbDataContext;
+import net.jrkatz.minero.data.DataContextFactory;
 import net.jrkatz.minero.data.Debit;
+import net.jrkatz.minero.data.IDataContext;
 import net.jrkatz.minero.data.ProviderException;
 
 public class Lander extends AppCompatActivity {
     private void refreshBudget() {
         BudgetPeriod budgetPeriod;
-        try(final DbDataContext providerContext = new DbDataContext(this)) {
+        try (final IDataContext providerContext = DataContextFactory.getDataContext(this)) {
             final Budget budget = providerContext.getBudgetProvider().getDefaultBudget(providerContext);
             budgetPeriod = providerContext.getBudgetPeriodProvider().getCurrentBudgetPeriod(providerContext, budget.getId());
             providerContext.markSuccessful();

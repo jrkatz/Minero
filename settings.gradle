@@ -1,1 +1,1 @@
-include ':app', ':budgetDb'
+include ':app', ':budgetDb', ':data'

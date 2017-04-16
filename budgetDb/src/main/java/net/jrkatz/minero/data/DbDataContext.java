@@ -30,12 +30,12 @@ import android.support.annotation.NonNull;
 public class DbDataContext implements IDataContext<DbDataContext> {
     final SQLiteDatabase mDb;
 
-    public DbDataContext(final Context context) {
+    DbDataContext(final Context context) {
         mDb = new BudgetDbHelper(context).getWritableDatabase();
         mDb.beginTransaction();
     }
 
-    public SQLiteDatabase getDb() {
+    SQLiteDatabase getDb() {
         return mDb;
     }
 
@@ -54,19 +54,19 @@ public class DbDataContext implements IDataContext<DbDataContext> {
 
     @Override
     @NonNull
-    public AbstractBudgetProvider<DbDataContext> getBudgetProvider() {
+    public BudgetProvider<DbDataContext> getBudgetProvider() {
         return new DbBudgetProvider();
     }
 
     @Override
     @NonNull
-    public AbstractDebitProvider<DbDataContext> getDebitProvider() {
+    public DebitProvider<DbDataContext> getDebitProvider() {
         return new DbDebitProvider();
     }
 
     @Override
     @NonNull
-    public AbstractBudgetPeriodProvider<DbDataContext> getBudgetPeriodProvider() {
+    public BudgetPeriodProvider<DbDataContext> getBudgetPeriodProvider() {
         return new DbBudgetPeriodProvider();
     }
 }

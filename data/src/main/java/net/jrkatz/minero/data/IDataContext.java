@@ -24,9 +24,9 @@ package net.jrkatz.minero.data;
  */
 
 public interface IDataContext<ProviderContext extends IDataContext> extends AutoCloseable {
-    AbstractBudgetProvider<ProviderContext> getBudgetProvider();
-    AbstractDebitProvider<ProviderContext> getDebitProvider();
-    AbstractBudgetPeriodProvider<ProviderContext> getBudgetPeriodProvider();
+    BudgetProvider<ProviderContext> getBudgetProvider();
+    DebitProvider<ProviderContext> getDebitProvider();
+    BudgetPeriodProvider<ProviderContext> getBudgetPeriodProvider();
 
     void markSuccessful() throws ProviderException;
 
