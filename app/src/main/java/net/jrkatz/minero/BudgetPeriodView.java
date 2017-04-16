@@ -25,7 +25,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import net.jrkatz.minero.data.budgetPeriod.BudgetPeriod;
+import net.jrkatz.minero.data.BudgetPeriod;
 
 import org.joda.time.LocalDate;
 

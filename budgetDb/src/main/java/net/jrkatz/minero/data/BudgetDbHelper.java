@@ -19,25 +19,9 @@
 package net.jrkatz.minero.data;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-
-import net.jrkatz.minero.data.budget.Budget;
-import net.jrkatz.minero.data.budget.BudgetProvider;
-import net.jrkatz.minero.data.budgetPeriod.BudgetPeriod;
-import net.jrkatz.minero.data.budgetPeriod.BudgetPeriodProvider;
-import net.jrkatz.minero.data.debit.DebitProvider;
-import net.jrkatz.minero.data.period.MonthlyPeriodDefinition;
-
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
-
-import java.util.Date;
 
 /**
  * @Author jrkatz

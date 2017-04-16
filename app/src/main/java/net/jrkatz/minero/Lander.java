@@ -29,11 +29,11 @@ import android.view.MenuItem;
 import android.widget.EditText;
 
 import net.jrkatz.minero.data.BudgetDbHelper;
-import net.jrkatz.minero.data.budget.Budget;
-import net.jrkatz.minero.data.budget.BudgetProvider;
-import net.jrkatz.minero.data.budgetPeriod.BudgetPeriod;
-import net.jrkatz.minero.data.budgetPeriod.BudgetPeriodProvider;
-import net.jrkatz.minero.data.debit.Debit;
+import net.jrkatz.minero.data.Budget;
+import net.jrkatz.minero.data.BudgetProvider;
+import net.jrkatz.minero.data.BudgetPeriod;
+import net.jrkatz.minero.data.BudgetPeriodProvider;
+import net.jrkatz.minero.data.Debit;
 
 public class Lander extends AppCompatActivity {
     private void refreshBudget() {

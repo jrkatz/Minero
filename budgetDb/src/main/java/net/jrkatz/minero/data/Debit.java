@@ -16,16 +16,13 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.jrkatz.minero.data.debit;
+package net.jrkatz.minero.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDateTime;
-
-import java.util.Date;
 
 /**
  * @Author jrkatz

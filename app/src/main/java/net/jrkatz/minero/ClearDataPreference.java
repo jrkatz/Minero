@@ -24,9 +24,8 @@ import android.preference.DialogPreference;
 import android.util.AttributeSet;
 
 import net.jrkatz.minero.data.BudgetDbHelper;
-import net.jrkatz.minero.data.budget.BudgetProvider;
-import net.jrkatz.minero.data.budgetPeriod.BudgetPeriodProvider;
-import net.jrkatz.minero.data.debit.DebitProvider;
+import net.jrkatz.minero.data.BudgetPeriodProvider;
+import net.jrkatz.minero.data.DebitProvider;
 
 /**
  * @Author jrkatz

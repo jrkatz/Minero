@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.jrkatz.minero.data.budgetPeriod;
+package net.jrkatz.minero.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -24,10 +24,6 @@ import android.support.annotation.NonNull;
 
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
-
-import net.jrkatz.minero.data.budget.Budget;
-import net.jrkatz.minero.data.debit.Debit;
-import net.jrkatz.minero.data.period.Period;
 
 import java.util.ArrayList;
 

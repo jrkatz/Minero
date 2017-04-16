@@ -16,7 +16,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.jrkatz.minero.data.budget;
+package net.jrkatz.minero.data;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -25,9 +25,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
-
-import net.jrkatz.minero.data.period.MonthlyPeriodDefinition;
-import net.jrkatz.minero.data.period.PeriodDefinition;
 
 /**
  * @Author jrkatz
