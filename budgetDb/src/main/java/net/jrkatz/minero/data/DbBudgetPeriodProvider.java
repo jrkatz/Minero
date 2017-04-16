@@ -34,7 +34,7 @@ import org.joda.time.format.DateTimeFormatter;
  * @Date 3/1/2017.
  */
 
-public class BudgetPeriodProvider extends AbstractBudgetPeriodProvider<DbDataContext> {
+public class DbBudgetPeriodProvider extends AbstractBudgetPeriodProvider<DbDataContext> {
     public static final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("YYYY-MM-dd");
 
     private static BudgetPeriod atCursor(@NonNull final DbDataContext context, @NonNull final Cursor cursor) throws ProviderException{

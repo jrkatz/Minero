@@ -55,18 +55,18 @@ public class DbDataContext implements IDataContext<DbDataContext> {
     @Override
     @NonNull
     public AbstractBudgetProvider<DbDataContext> getBudgetProvider() {
-        return new BudgetProvider();
+        return new DbBudgetProvider();
     }
 
     @Override
     @NonNull
     public AbstractDebitProvider<DbDataContext> getDebitProvider() {
-        return new DebitProvider();
+        return new DbDebitProvider();
     }
 
     @Override
     @NonNull
     public AbstractBudgetPeriodProvider<DbDataContext> getBudgetPeriodProvider() {
-        return new BudgetPeriodProvider();
+        return new DbBudgetPeriodProvider();
     }
 }

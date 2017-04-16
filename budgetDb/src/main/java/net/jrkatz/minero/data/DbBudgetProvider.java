@@ -28,7 +28,7 @@ import android.support.annotation.Nullable;
  * @Author jrkatz
  * @Date 3/1/2017.
  */
-public class BudgetProvider extends AbstractBudgetProvider<DbDataContext> {
+public class DbBudgetProvider extends AbstractBudgetProvider<DbDataContext> {
     private static final String [] COLUMNS = new String[]{"id", "period_definition",  "distribution", "name"};
     private static final String TABLE_NAME = "budget";
 

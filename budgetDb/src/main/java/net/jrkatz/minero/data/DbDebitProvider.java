@@ -33,7 +33,7 @@ import org.joda.time.DateTimeZone;
  * @Date 3/1/2017.
  */
 
-public class DebitProvider extends AbstractDebitProvider<DbDataContext>{
+public class DbDebitProvider extends AbstractDebitProvider<DbDataContext>{
     private static final String[] COLUMNS = new String[]{"id", "budget_id", "budget_period_id", "amount", "description", "time", "zone"};
     private static final String TABLE_NAME = "debit";
 
