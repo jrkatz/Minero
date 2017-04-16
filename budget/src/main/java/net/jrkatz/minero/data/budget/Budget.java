@@ -21,33 +21,42 @@ package net.jrkatz.minero.data.budget;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import net.jrkatz.minero.data.budgetPeriod.BudgetPeriod;
 import net.jrkatz.minero.data.period.PeriodDefinition;
 
 /**
  * Definition of a budget.
  */
 public class Budget implements Parcelable {
+    private final long mId;
     private final PeriodDefinition mPeriodDefinition;
     private final long mDistribution;
     private final String mName;
 
     public Budget(
+            final long id,
             final PeriodDefinition periodDefinition,
-            final int distribution,
+            final long distribution,
             final String name
     ) {
+        mId = id;
         mPeriodDefinition = periodDefinition;
         mDistribution = distribution;
         mName = name;
     }
 
     protected Budget(Parcel in) {
+        mId = in.readLong();
         mPeriodDefinition = in.readParcelable(PeriodDefinition.class.getClassLoader());
         mDistribution = in.readLong();
         mName = in.readString();
     }
     public long getDistribution() {
         return mDistribution;
+    }
+
+    public long getId() {
+        return mId;
     }
 
     public PeriodDefinition getPeriodDefinition() {
@@ -73,6 +82,7 @@ public class Budget implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(mId);
         dest.writeParcelable(mPeriodDefinition, flags);
         dest.writeLong(mDistribution);
         dest.writeString(mName);

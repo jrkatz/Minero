@@ -19,6 +19,7 @@
 package net.jrkatz.minero.data.period;
 
 import android.os.Parcel;
+import android.support.annotation.NonNull;
 
 import org.joda.time.LocalDate;
 
@@ -53,6 +54,22 @@ public class MonthlyPeriodDefinition extends PeriodDefinition {
     @Override
     public Period periodForDate(final LocalDate date) {
         return periodForMonth(date.getYear(), date.getMonthOfYear());
+    }
+
+    @Override
+    Type getType() {
+        return Type.MONTHLY;
+    }
+
+    @NonNull
+    @Override
+    public String serializeContent() {
+        return Integer.toString(mDayStart);
+    }
+
+    @NonNull
+    static MonthlyPeriodDefinition parseContent(@NonNull final String content) {
+        return new MonthlyPeriodDefinition(Integer.parseInt(content));
     }
 
     @Override

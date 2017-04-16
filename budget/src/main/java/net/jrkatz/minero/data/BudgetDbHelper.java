@@ -19,8 +19,25 @@
 package net.jrkatz.minero.data;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+
+import net.jrkatz.minero.data.budget.Budget;
+import net.jrkatz.minero.data.budget.BudgetProvider;
+import net.jrkatz.minero.data.budgetPeriod.BudgetPeriod;
+import net.jrkatz.minero.data.budgetPeriod.BudgetPeriodProvider;
+import net.jrkatz.minero.data.debit.DebitProvider;
+import net.jrkatz.minero.data.period.MonthlyPeriodDefinition;
+
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+
+import java.util.Date;
 
 /**
  * @Author jrkatz
@@ -29,25 +46,81 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class BudgetDbHelper extends SQLiteOpenHelper {
     private static final int DB_VERSION = 1;
-    private static final String DB_NAME = "budget";
-    private static final String DB_SCHEMA =
-            "CREATE TABLE debit(" +
-                    "id INTEGER PRIMARY KEY ASC," +
-                    "amount INTEGER," +
-                    "description TEXT," +
-                    "time INTEGER" +
-                    ");" +
-            "CREATE INDEX idx_debit_time ON debit (time)";
+    private static final String DB_NAME = "minero";
 
-    public BudgetDbHelper(Context context) {
+    enum Table {
+        DEBIT(1, "CREATE TABLE debit(" +
+                "id INTEGER PRIMARY KEY ASC," +
+                "budget_id INTEGER REFERENCES budget(id) ON DELETE CASCADE," +
+                "budget_period_id INTEGER REFERENCES budget_period(id) ON DELETE CASCADE," +
+                "amount INTEGER," +
+                "description TEXT," +
+                "time INTEGER," +
+                "zone TEXT" +
+                ");"),
+        DEBIT_TIME_IDX(1, "CREATE INDEX idx_debit_time ON debit (time)"),
+        DEBIT_PERIOD_IDX(1, "CREATE INDEX idx_debit_period ON debit(budget_period_id)"),
+        DEBIT_BUDGET_IDX(1, "CREATE INDEX idx_debit_budget ON debit(budget_id)"),
+        BUDGET(1, "CREATE TABLE budget(" +
+                "id INTEGER PRIMARY KEY ASC," +
+                "distribution INTEGER," +
+                "name TEXT," +
+                "period_definition TEXT" +
+                ");"),
+        BUDGET_PERIOD(1, "CREATE TABLE budget_period(" +
+                "id INTEGER PRIMARY KEY ASC," +
+                "budget_id INTEGER REFERENCES budget(id) ON DELETE CASCADE," +
+                "distribution TEXT," +
+                "start TEXT," +
+                "end TEXT" +
+                ");"),
+        BUDGET_PERIOD_IDX(1, "CREATE INDEX idx_budget_period_time ON budget_period(start, end);")
+        //TODO consider adding a constraint preventing overlapping periods?
+        ;
+        private final String mSql;
+        private final int mFirstVersion;
+        Table(final int firstVersion, @NonNull final String sql) {
+            mFirstVersion = firstVersion;
+            mSql = sql;
+        }
+
+        @NonNull
+        String getSql() {
+            return mSql;
+        }
+
+        int getFirstVersion() {
+            return mFirstVersion;
+        }
+    }
+
+    public BudgetDbHelper(@NonNull final Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL(DB_SCHEMA);
+    public void onCreate(@NonNull final SQLiteDatabase db) {
+        for (final Table  t : Table.values()) {
+            db.execSQL(t.getSql());
+        }
+    }
+
+    private void upgrade(@NonNull final SQLiteDatabase db, int newVersion) {
+        //add missing tables
+        for (final Table t : Table.values()) {
+            if (newVersion == t.getFirstVersion()) {
+                db.execSQL(t.getSql());
+            }
+        }
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {}
+    public void onUpgrade(@NonNull final SQLiteDatabase db, final int oldVersion, final int newVersion) {
+        db.beginTransaction();
+        for (int version = oldVersion + 1; version <= newVersion; version++) {
+            upgrade(db, version);
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
 }

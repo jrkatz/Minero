@@ -21,6 +21,8 @@ package net.jrkatz.minero.data.debit;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 
 import java.util.Date;
@@ -32,15 +34,19 @@ import java.util.Date;
 public class Debit implements Parcelable {
 
     private final long mId;
+    private final long mBudgetId;
+    private final long mBudgetPeriodId;
     private final int mAmount;
     private final String mDescription;
-    private final LocalDateTime mTime;
+    private final DateTime mTime;
 
-    protected Debit(long id, int amount, String description, LocalDateTime time) {
-        this.mId = id;
-        this.mAmount = amount;
-        this.mDescription = description;
-        this.mTime = time;
+    protected Debit(long id, long budgetId, long budgetPeriodId, int amount, String description, DateTime time) {
+        mId = id;
+        mBudgetId = budgetId;
+        mBudgetPeriodId = budgetPeriodId;
+        mAmount = amount;
+        mDescription = description;
+        mTime = time;
     }
 
     public static final Creator<Debit> CREATOR = new Creator<Debit>() {
@@ -63,7 +69,7 @@ public class Debit implements Parcelable {
         return mDescription;
     }
 
-    public LocalDateTime getTime() {
+    public DateTime getTime() {
         return mTime;
     }
 
@@ -75,15 +81,21 @@ public class Debit implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(mId);
+        dest.writeLong(mBudgetId);
+        dest.writeLong(mBudgetPeriodId);
         dest.writeInt(mAmount);
         dest.writeString(mDescription);
         dest.writeLong(mTime.toDate().getTime());
+        dest.writeString(mTime.getZone().getID());
     }
 
     protected Debit(Parcel in) {
         mId = in.readLong();
+        mBudgetId = in.readLong();
+        mBudgetPeriodId = in.readLong();
         mAmount = in.readInt();
         mDescription = in.readString();
-        mTime = LocalDateTime.fromDateFields(new Date(in.readLong()));
+        mTime = new DateTime(in.readLong())
+                .withZone(DateTimeZone.forID(in.readString()));
     }
 }

@@ -19,34 +19,35 @@
 package net.jrkatz.minero;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.TextView;
 
+import net.jrkatz.minero.data.BudgetDbHelper;
+import net.jrkatz.minero.data.budget.Budget;
+import net.jrkatz.minero.data.budget.BudgetProvider;
 import net.jrkatz.minero.data.budgetPeriod.BudgetPeriod;
 import net.jrkatz.minero.data.budgetPeriod.BudgetPeriodProvider;
 import net.jrkatz.minero.data.debit.Debit;
-import net.jrkatz.minero.data.debit.DebitProvider;
-
-import org.joda.time.LocalDateTime;
 
 public class Lander extends AppCompatActivity {
-    private BudgetPeriod mBudgetPeriod;
-
     private void refreshBudget() {
-        mBudgetPeriod = new BudgetPeriodProvider(this).loadBudgetPeriod();
-        renderBudget();
+        try(SQLiteDatabase db = new BudgetDbHelper(this).getWritableDatabase()) {
+            final Budget budget = BudgetProvider.getDefaultBudget(db);
+            renderBudget(BudgetPeriodProvider.getCurrentBudgetPeriod(db, budget.getId()));
+        }
     }
 
-    private void renderBudget() {
-        BudgetPeriodView budgetPeriodView = (BudgetPeriodView) findViewById(R.id.budget_period);
-        budgetPeriodView.bind(mBudgetPeriod);
+    private void renderBudget(@NonNull final BudgetPeriod budgetPeriod) {
+        final BudgetPeriodView budgetPeriodView = (BudgetPeriodView) findViewById(R.id.budget_period);
+        final DebitEntryView debitEntryView = (DebitEntryView) findViewById(R.id.debit_entry);
+        debitEntryView.bind(budgetPeriod.getBudgetId());
+        budgetPeriodView.bind(budgetPeriod);
     }
 
     @Override
@@ -55,15 +56,6 @@ public class Lander extends AppCompatActivity {
         setContentView(R.layout.activity_lander);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        refreshBudget();
-        final DebitEntryView debitEntryView = (DebitEntryView) findViewById(R.id.debit_entry);
-        debitEntryView.setListener(new DebitEntryView.DebitCreationListener() {
-            @Override
-            public void onDebitCreated(Debit debit) {
-                refreshBudget();
-            }
-        });
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -89,9 +81,18 @@ public class Lander extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         final EditText spendAmt = (EditText)findViewById(R.id.spend_amt);
+
+        refreshBudget();
+        final DebitEntryView debitEntryView = (DebitEntryView) findViewById(R.id.debit_entry);
+        debitEntryView.setListener(new DebitEntryView.DebitCreationListener() {
+            @Override
+            public void onDebitCreated(Debit debit) {
+                refreshBudget();
+            }
+        });
         spendAmt.requestFocus();
     }
 }

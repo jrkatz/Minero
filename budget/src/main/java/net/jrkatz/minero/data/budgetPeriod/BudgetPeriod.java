@@ -20,6 +20,7 @@ package net.jrkatz.minero.data.budgetPeriod;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
@@ -36,29 +37,39 @@ import java.util.ArrayList;
  */
 
 public class BudgetPeriod implements Parcelable {
-    private final Budget mBudget;
+    private final long mId;
+    private final long mBudgetId;
     private final Period mPeriod;
-    private final long mRemaining;
+    private final long mDistribution;
     private final ImmutableList<Debit> mDebits;
+    private final long mRemaining;
 
-    /**
-     * Functions that call this should be unit tested to ensure 'remaining'
-     * lines up with the 'budget' and the 'debits' list
-     * @param budget
-     * @param period
-     * @param remaining
-     * @param debits
-     */
     public BudgetPeriod(
-            Budget budget,
-            Period period,
-            long remaining,
-            ImmutableList<Debit> debits
+            final long id,
+            final long budgetId,
+            @NonNull final Period period,
+            final long distribution,
+            @NonNull final ImmutableList<Debit> debits
     ) {
-        this.mBudget = budget;
-        this.mPeriod = period;
-        this.mRemaining = remaining;
-        this.mDebits = debits;
+        mId = id;
+        mBudgetId = budgetId;
+        mPeriod = period;
+        mDistribution = distribution;
+        mDebits = debits;
+        long remaining = mDistribution;
+        for(final Debit debit : mDebits) {
+            remaining-=debit.getAmount();
+        }
+
+        mRemaining = remaining;
+    }
+
+    public long getBudgetId() {
+        return mBudgetId;
+    }
+
+    public long getId() {
+        return mId;
     }
 
     public long getRemaining() {
@@ -73,10 +84,6 @@ public class BudgetPeriod implements Parcelable {
         return mDebits;
     }
 
-    public Budget getBudget() {
-        return mBudget;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -84,19 +91,24 @@ public class BudgetPeriod implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(mBudget, flags);
+        dest.writeLong(mId);
+        dest.writeLong(mBudgetId);
         dest.writeParcelable(mPeriod, flags);
-        dest.writeLong(mRemaining);
+        dest.writeLong(mDistribution);
         dest.writeTypedList(mDebits);
+        dest.writeLong(mRemaining);
     }
 
     protected BudgetPeriod(Parcel in) {
-        mBudget = in.readParcelable(Budget.class.getClassLoader());
+        mId = in.readLong();
+        mBudgetId = in.readLong();
         mPeriod = in.readParcelable(Period.class.getClassLoader());
-        mRemaining = in.readLong();
+        mDistribution = in.readLong();
         final ArrayList<Debit> debits = new ArrayList<>();
         in.readTypedList(debits, Debit.CREATOR);
         mDebits = ImmutableList.copyOf(debits);
+        mRemaining = in.readLong();
+
     }
 
     public static final Creator<BudgetPeriod> CREATOR = new Creator<BudgetPeriod>() {

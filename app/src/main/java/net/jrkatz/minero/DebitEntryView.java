@@ -20,6 +20,7 @@ package net.jrkatz.minero;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ParseException;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -32,10 +33,13 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import net.jrkatz.minero.data.BudgetDbHelper;
+import net.jrkatz.minero.data.budgetPeriod.BudgetPeriod;
+import net.jrkatz.minero.data.budgetPeriod.BudgetPeriodProvider;
 import net.jrkatz.minero.data.debit.Debit;
 import net.jrkatz.minero.data.debit.DebitProvider;
 
-import org.joda.time.LocalDateTime;
+import org.joda.time.DateTime;
 
 /**
  * @Author jrkatz
@@ -46,17 +50,17 @@ public class DebitEntryView extends FrameLayout {
     private static final int AMT_ENTRY = 0;
     private static final int TAG_ENTRY = 1;
 
-    private final DebitProvider mDebitProvider;
     private DebitCreationListener mListener = null;
     private final Button mAddButton;
     private final EditText mSpendAmt;
     private final EditText mSpendTag;
+
     private int mState = AMT_ENTRY;
+    private long mBudgetId;
 
     public DebitEntryView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         View.inflate(context, R.layout.view_debit_entry, this);
-        mDebitProvider = new DebitProvider(context);
 
         mAddButton = (Button) findViewById(R.id.spend_btn);
         mSpendAmt = (EditText) findViewById(R.id.spend_amt);
@@ -93,6 +97,10 @@ public class DebitEntryView extends FrameLayout {
                         updateView();
                     }
                 }
+                else if (mState != AMT_ENTRY){
+                    mState = AMT_ENTRY;
+                    updateView();
+                }
             }
         });
 
@@ -121,6 +129,10 @@ public class DebitEntryView extends FrameLayout {
                 return true;
             }
         });
+    }
+
+    public void bind(final long budgetId) {
+        mBudgetId = budgetId;
     }
 
     private Integer sanitizeAmt() {
@@ -183,13 +195,22 @@ public class DebitEntryView extends FrameLayout {
             return;
         }
         final String tag = mSpendTag.getText().toString();
-        final Debit debit = mDebitProvider.createDebit(amt, tag, LocalDateTime.now());
-        mListener.onDebitCreated(debit);
+        try(SQLiteDatabase db = new BudgetDbHelper(this.getContext()).getWritableDatabase()) {
+            final BudgetPeriod budgetPeriod = BudgetPeriodProvider.getCurrentBudgetPeriod(db, mBudgetId);
+            final Debit debit = DebitProvider.createDebit(
+                    db,
+                    budgetPeriod.getBudgetId(),
+                    budgetPeriod.getId(),
+                    amt,
+                    tag,
+                    DateTime.now());
+            mListener.onDebitCreated(debit);
 
-        mSpendTag.setText("");
-        mSpendAmt.setText("");
-        mState = AMT_ENTRY;
-        updateView();
+            mSpendTag.setText("");
+            mSpendAmt.setText("");
+            mState = AMT_ENTRY;
+            updateView();
+        }
     }
 
     //I don't really like this model of effecting changes. I'd rather register
@@ -200,6 +221,6 @@ public class DebitEntryView extends FrameLayout {
     }
 
     public interface DebitCreationListener {
-        public void onDebitCreated(Debit debit);
+        void onDebitCreated(Debit debit);
     }
 }
