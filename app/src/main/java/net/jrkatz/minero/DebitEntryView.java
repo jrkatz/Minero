@@ -20,7 +20,6 @@ package net.jrkatz.minero;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.ParseException;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -33,11 +32,10 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import net.jrkatz.minero.data.BudgetDbHelper;
 import net.jrkatz.minero.data.BudgetPeriod;
-import net.jrkatz.minero.data.BudgetPeriodProvider;
+import net.jrkatz.minero.data.DbDataContext;
 import net.jrkatz.minero.data.Debit;
-import net.jrkatz.minero.data.DebitProvider;
+import net.jrkatz.minero.data.ProviderException;
 
 import org.joda.time.DateTime;
 
@@ -195,22 +193,27 @@ public class DebitEntryView extends FrameLayout {
             return;
         }
         final String tag = mSpendTag.getText().toString();
-        try(SQLiteDatabase db = new BudgetDbHelper(this.getContext()).getWritableDatabase()) {
-            final BudgetPeriod budgetPeriod = BudgetPeriodProvider.getCurrentBudgetPeriod(db, mBudgetId);
-            final Debit debit = DebitProvider.createDebit(
-                    db,
+        final Debit debit;
+        try (final DbDataContext providerContext = new DbDataContext(getContext())) {
+            final BudgetPeriod budgetPeriod = providerContext.getBudgetPeriodProvider().getCurrentBudgetPeriod(providerContext, mBudgetId);
+            debit = providerContext.getDebitProvider().createDebit(
+                    providerContext,
                     budgetPeriod.getBudgetId(),
                     budgetPeriod.getId(),
                     amt,
                     tag,
                     DateTime.now());
-            mListener.onDebitCreated(debit);
-
-            mSpendTag.setText("");
-            mSpendAmt.setText("");
-            mState = AMT_ENTRY;
-            updateView();
+            providerContext.markSuccessful();
+        } catch (ProviderException e) {
+            //TODO handle better
+            throw new RuntimeException(e);
         }
+        mListener.onDebitCreated(debit);
+
+        mSpendTag.setText("");
+        mSpendAmt.setText("");
+        mState = AMT_ENTRY;
+        updateView();
     }
 
     //I don't really like this model of effecting changes. I'd rather register

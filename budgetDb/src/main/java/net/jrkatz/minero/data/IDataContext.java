@@ -16,19 +16,20 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.jrkatz.minero;
+package net.jrkatz.minero.data;
 
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+/**
+ * @Author jrkatz
+ * @Date 4/16/2017.
+ */
 
-public class Settings extends AppCompatActivity {
+public interface IDataContext<ProviderContext extends IDataContext> extends AutoCloseable {
+    AbstractBudgetProvider<ProviderContext> getBudgetProvider();
+    AbstractDebitProvider<ProviderContext> getDebitProvider();
+    AbstractBudgetPeriodProvider<ProviderContext> getBudgetPeriodProvider();
+
+    void markSuccessful() throws ProviderException;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // Display the fragment as the main content.
-        getFragmentManager().beginTransaction()
-                .replace(android.R.id.content, new SettingsFragment())
-                .commit();
-    }
+    void close() throws ProviderException;
 }

@@ -20,8 +20,8 @@ package net.jrkatz.minero.data;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
 
@@ -34,45 +34,27 @@ import org.joda.time.format.DateTimeFormatter;
  * @Date 3/1/2017.
  */
 
-public class BudgetPeriodProvider {
+public class BudgetPeriodProvider extends AbstractBudgetPeriodProvider<DbDataContext> {
     public static final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("YYYY-MM-dd");
 
-    public static BudgetPeriod getCurrentBudgetPeriod(SQLiteDatabase db, final long budgetId) {
-        BudgetPeriod budgetPeriod = getLatestBudgetPeriod(db, budgetId);
-        //if this budgetPeriod is too old it may be necessary to create a new one or _several_
-        //new ones.
-        final LocalDate now = LocalDate.now();
-        if (budgetPeriod == null) {
-            final Budget budget = BudgetProvider.getBudget(db, budgetId);
-            final PeriodDefinition periodDefinition = budget.getPeriodDefinition();
-            final Period period = periodDefinition.periodForDate(now);
-            budgetPeriod = createBudgetPeriod(db, budgetId, budget.getDistribution(), period);
-        }
-        else if (budgetPeriod.getPeriod().getEnd().isBefore(now)) {
-            final Budget budget = BudgetProvider.getBudget(db, budgetId);
-            final PeriodDefinition periodDefinition = budget.getPeriodDefinition();
-            do {
-                final Period nextPeriod = periodDefinition.periodForDate(budgetPeriod.getPeriod().getEnd());
-                budgetPeriod = createBudgetPeriod(db, budgetId, budget.getDistribution(), nextPeriod);
-            } while (budgetPeriod.getPeriod().getEnd().isBefore(now));
-        }
-        return budgetPeriod;
-    }
-
-    private static BudgetPeriod atCursor(final SQLiteDatabase db, @NonNull final Cursor cursor) {
+    private static BudgetPeriod atCursor(@NonNull final DbDataContext context, @NonNull final Cursor cursor) throws ProviderException{
         final long id = cursor.getLong(0);
         final long budgetId = cursor.getLong(1);
         final long distribution = cursor.getLong(2);
         final LocalDate start = DATE_FORMAT.parseLocalDate(cursor.getString(3));
         final LocalDate end = DATE_FORMAT.parseLocalDate(cursor.getString(4));
-        final ImmutableList<Debit> debits = DebitProvider.readDebits(db, id);
+        final ImmutableList<Debit> debits = context.getDebitProvider().readDebits(context, id);
 
         return new BudgetPeriod(id, budgetId, new Period(start, end), distribution, debits);
     }
 
-    public static BudgetPeriod getBudgetPeriod(final SQLiteDatabase db, final long budgetId, final LocalDate date) {
+    @Override
+    @Nullable
+    public BudgetPeriod getBudgetPeriod(final DbDataContext context,
+                                               final long budgetId,
+                                               final LocalDate date) throws ProviderException {
         final String dateString = DATE_FORMAT.print(date);
-        try(final Cursor cursor = db.query(
+        try(final Cursor cursor = context.getDb().query(
                 "budget_period",
                 new String[] {"id", "budget_id", "distribution", "start", "end"},
                 "budget_id = ? AND start <= ? AND end > ?",
@@ -81,15 +63,18 @@ public class BudgetPeriodProvider {
                 null,
                 null)) {
             if (cursor.moveToFirst()) {
-                return atCursor(db, cursor);
+                return atCursor(context, cursor);
             }
             return null;
         }
     }
 
-    public static BudgetPeriod getLatestBudgetPeriod(final SQLiteDatabase db,final long budgetId) {
+    @Override
+    @Nullable
+    public BudgetPeriod getLatestBudgetPeriod(@NonNull final DbDataContext context,
+                                              final long budgetId) throws ProviderException {
         //TODO the query planner might suck and not notice how easy this is. Hacks may be needed.
-        try(final Cursor cursor = db.query(
+        try(final Cursor cursor = context.getDb().query(
                 "budget_period",
                 new String[] {"id", "budget_id", "distribution", "start", "end"},
                 "id = ?",
@@ -99,13 +84,15 @@ public class BudgetPeriodProvider {
                 "start DESC",
                 "1")) {
             if (cursor.moveToFirst()) {
-                return atCursor(db, cursor);
+                return atCursor(context, cursor);
             }
             return null;
         }
     }
 
-    public static BudgetPeriod createBudgetPeriod(@NonNull final SQLiteDatabase db,
+    @Override
+    @NonNull
+    public BudgetPeriod createBudgetPeriod(@NonNull final DbDataContext context,
                                                      final long budgetId,
                                                      final long distribution,
                                                      @NonNull final Period period) {
@@ -114,11 +101,12 @@ public class BudgetPeriodProvider {
         values.put("distribution", distribution);
         values.put("start", DATE_FORMAT.print(period.getStart()));
         values.put("end", DATE_FORMAT.print(period.getEnd()));
-        long id = db.insertOrThrow("budget_period", null, values);
+        long id = context.getDb().insertOrThrow("budget_period", null, values);
         return new BudgetPeriod(id, budgetId, period, distribution, ImmutableList.<Debit>of());
     }
 
-    public static void clearBudgetPeriods(final SQLiteDatabase db) {
-        db.delete("budget_period", null, new String[0]);
+    @Override
+    public void clearBudgetPeriods(@NonNull DbDataContext context) {
+        context.getDb().delete("budget_period", null, new String[0]);
     }
 }

@@ -19,28 +19,32 @@
 package net.jrkatz.minero;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
-import net.jrkatz.minero.data.BudgetDbHelper;
 import net.jrkatz.minero.data.Budget;
-import net.jrkatz.minero.data.BudgetProvider;
 import net.jrkatz.minero.data.BudgetPeriod;
-import net.jrkatz.minero.data.BudgetPeriodProvider;
+import net.jrkatz.minero.data.DbDataContext;
 import net.jrkatz.minero.data.Debit;
+import net.jrkatz.minero.data.ProviderException;
 
 public class Lander extends AppCompatActivity {
     private void refreshBudget() {
-        try(SQLiteDatabase db = new BudgetDbHelper(this).getWritableDatabase()) {
-            final Budget budget = BudgetProvider.getDefaultBudget(db);
-            renderBudget(BudgetPeriodProvider.getCurrentBudgetPeriod(db, budget.getId()));
+        BudgetPeriod budgetPeriod;
+        try(final DbDataContext providerContext = new DbDataContext(this)) {
+            final Budget budget = providerContext.getBudgetProvider().getDefaultBudget(providerContext);
+            budgetPeriod = providerContext.getBudgetPeriodProvider().getCurrentBudgetPeriod(providerContext, budget.getId());
+            providerContext.markSuccessful();
+        } catch (ProviderException e) {
+            //TODO handle
+            throw new RuntimeException(e);
         }
+        renderBudget(budgetPeriod);
     }
 
     private void renderBudget(@NonNull final BudgetPeriod budgetPeriod) {

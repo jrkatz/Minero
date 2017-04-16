@@ -19,13 +19,11 @@
 package net.jrkatz.minero;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 
-import net.jrkatz.minero.data.BudgetDbHelper;
-import net.jrkatz.minero.data.BudgetPeriodProvider;
-import net.jrkatz.minero.data.DebitProvider;
+import net.jrkatz.minero.data.DbDataContext;
+import net.jrkatz.minero.data.ProviderException;
 
 /**
  * @Author jrkatz
@@ -40,10 +38,15 @@ public class ClearDataPreference extends DialogPreference{
     @Override
     protected void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
-        try (SQLiteDatabase db = new BudgetDbHelper(this.getContext()).getWritableDatabase()) {
-            if (positiveResult) {
-                DebitProvider.clearDebits(db);
-                BudgetPeriodProvider.clearBudgetPeriods(db);
+        if (positiveResult) {
+            try (final DbDataContext providerContext = new DbDataContext(getContext())) {
+                providerContext.getDebitProvider().clearDebits(providerContext);
+                providerContext.getBudgetPeriodProvider().clearBudgetPeriods(providerContext);
+                providerContext.markSuccessful();
+            }
+            catch(ProviderException e) {
+                //TODO handle this.
+                throw new RuntimeException(e);
             }
         }
     }

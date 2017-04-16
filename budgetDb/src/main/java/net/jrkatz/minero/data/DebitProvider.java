@@ -21,7 +21,7 @@ package net.jrkatz.minero.data;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
+import android.support.annotation.NonNull;
 
 import com.google.common.collect.ImmutableList;
 
@@ -33,32 +33,16 @@ import org.joda.time.DateTimeZone;
  * @Date 3/1/2017.
  */
 
-public class DebitProvider {
+public class DebitProvider extends AbstractDebitProvider<DbDataContext>{
     private static final String[] COLUMNS = new String[]{"id", "budget_id", "budget_period_id", "amount", "description", "time", "zone"};
     private static final String TABLE_NAME = "debit";
 
-    private static Cursor debitQuery(SQLiteDatabase db, String where, String ... whereArgs) {
-        return db.query(TABLE_NAME,
-                COLUMNS,
-                where,
-                whereArgs,
-                null, null, null);
-    }
-
-    private static Debit atCursor(final Cursor cursor) {
-        return new Debit(cursor.getLong(0),
-                cursor.getLong(1),
-                cursor.getLong(2),
-                cursor.getInt(3),
-                cursor.getString(4),
-                new DateTime(cursor.getLong(5))
-                        .withZone(DateTimeZone.forID(cursor.getString(6))));
-    }
-
-    public static ImmutableList<Debit> readDebits(final SQLiteDatabase db,
+    @Override
+    @NonNull
+    public ImmutableList<Debit> readDebits(@NonNull final DbDataContext context,
                                                      final long budgetPeriodId) {
         ImmutableList.Builder<Debit> debits = ImmutableList.builder();
-        try(Cursor cursor = debitQuery(db,
+        try(Cursor cursor = debitQuery(context.getDb(),
                 "budget_period_id = ?",
                 Long.toString(budgetPeriodId)
         )) {
@@ -69,12 +53,14 @@ public class DebitProvider {
         return debits.build();
     }
 
-    public static Debit createDebit(final SQLiteDatabase db,
+    @Override
+    @NonNull
+    public Debit createDebit(@NonNull final DbDataContext context,
                                        final long budgetId,
                                        final long budgetPeriodId,
                                        final int amount,
                                        final String description,
-                                       final DateTime time) throws SQLiteException {
+                                       final DateTime time) {
         ContentValues values = new ContentValues();
         values.put("amount", amount);
         values.put("budget_id", budgetId);
@@ -83,11 +69,30 @@ public class DebitProvider {
         //without the explicit Long boxing this is boxed & truncated into an Integer.
         values.put("time", Long.valueOf(time.toDate().getTime()));
         values.put("zone", time.getZone().getID());
-        long id = db.insertOrThrow("debit", null, values);
+        long id = context.getDb().insertOrThrow("debit", null, values);
         return new Debit(id, budgetId, budgetPeriodId, amount, description, time);
     }
 
-    public static void clearDebits(final SQLiteDatabase db) {
-        db.delete(TABLE_NAME, null, new String[0]);
+    @Override
+    public void clearDebits(@NonNull final DbDataContext context) {
+        context.getDb().delete(TABLE_NAME, null, new String[0]);
+    }
+
+    Cursor debitQuery(SQLiteDatabase db, String where, String ... whereArgs) {
+        return db.query(TABLE_NAME,
+                COLUMNS,
+                where,
+                whereArgs,
+                null, null, null);
+    }
+
+    Debit atCursor(final Cursor cursor) {
+        return new Debit(cursor.getLong(0),
+                cursor.getLong(1),
+                cursor.getLong(2),
+                cursor.getInt(3),
+                cursor.getString(4),
+                new DateTime(cursor.getLong(5))
+                        .withZone(DateTimeZone.forID(cursor.getString(6))));
     }
 }

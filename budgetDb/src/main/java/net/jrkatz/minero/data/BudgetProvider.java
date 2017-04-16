@@ -24,13 +24,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.common.collect.ImmutableList;
-
 /**
  * @Author jrkatz
  * @Date 3/1/2017.
  */
-public class BudgetProvider {
+public class BudgetProvider extends AbstractBudgetProvider<DbDataContext> {
     private static final String [] COLUMNS = new String[]{"id", "period_definition",  "distribution", "name"};
     private static final String TABLE_NAME = "budget";
 
@@ -39,14 +37,15 @@ public class BudgetProvider {
         return db.query(TABLE_NAME, COLUMNS, where, whereArgs, null, null, null);
     }
 
-    public static Budget getDefaultBudget(SQLiteDatabase db) {
-        try(Cursor c = db.query(TABLE_NAME, COLUMNS, null, null, null, null, "id ASC", "1")) {
+    @Override
+    public Budget getDefaultBudget(@NonNull final DbDataContext context) {
+        try(Cursor c = context.getDb().query(TABLE_NAME, COLUMNS, null, null, null, null, "id ASC", "1")) {
             if (c.moveToFirst()) {
                 return atCursor(c);
             }
             else {
                 //just make some crappy budget and call it square.
-                return createBudget(db, new MonthlyPeriodDefinition(1), 500, "default");
+                return createBudget(context, new MonthlyPeriodDefinition(1), 500, "default");
             }
         }
     }
@@ -59,25 +58,10 @@ public class BudgetProvider {
         }
     }
 
-    @NonNull
-    private static ImmutableList<Budget> drainCursor(@NonNull final Cursor cursor) {
-        final ImmutableList.Builder<Budget> builder = ImmutableList.builder();
-        while(cursor.moveToNext()) {
-            builder.add(atCursor(cursor));
-        }
-        return builder.build();
-    }
-
-    @NonNull
-    public static ImmutableList<Budget> readBudgets(SQLiteDatabase db) {
-        try(Cursor cursor = budgetQuery(db, "")) {
-            return drainCursor(cursor);
-        }
-    }
-
+    @Override
     @Nullable
-    public static Budget getBudget(final SQLiteDatabase db, final long id) {
-        try (Cursor cursor = budgetQuery(db, "id = ?", Long.toString(id))) {
+    public Budget getBudget(@NonNull final DbDataContext context, final long id) {
+        try (Cursor cursor = budgetQuery(context.getDb(), "id = ?", Long.toString(id))) {
             if (cursor.moveToFirst()) {
                 return atCursor(cursor);
             }
@@ -85,8 +69,9 @@ public class BudgetProvider {
         return null;
     }
 
+    @Override
     @NonNull
-    public static Budget createBudget(@NonNull final SQLiteDatabase db,
+    public Budget createBudget(@NonNull final DbDataContext context,
                                          @NonNull final PeriodDefinition periodDefinition,
                                          final long distribution,
                                          @NonNull final String name) {
@@ -95,7 +80,7 @@ public class BudgetProvider {
         values.put("name", name);
         values.put("period_definition", periodDefinition.serialize());
 
-        long id = db.insertOrThrow("budget", null, values);
+        long id = context.getDb().insertOrThrow("budget", null, values);
         return new Budget(id, periodDefinition, distribution, name);
     }
 }
