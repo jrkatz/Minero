@@ -71,7 +71,8 @@ public class RemoveDebitFragment extends DialogFragment {
                         }
                     }
                 })
-                .setNegativeButton(getResources().getText(R.string.cancel), new DialogInterface.OnClickListener() {
+                .setNegativeButton(getResources().getText(
+                        android.R.string.cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         onCancel(dialog);
