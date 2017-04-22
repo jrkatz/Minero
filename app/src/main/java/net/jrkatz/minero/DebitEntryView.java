@@ -50,7 +50,6 @@ public class DebitEntryView extends FrameLayout {
     private static final int TAG_ENTRY = 1;
 
     private DebitCreationListener mListener = null;
-    private final Button mAddButton;
     private final EditText mSpendAmt;
     private final EditText mSpendTag;
 
@@ -61,30 +60,12 @@ public class DebitEntryView extends FrameLayout {
         super(context, attrs);
         View.inflate(context, R.layout.view_debit_entry, this);
 
-        mAddButton = (Button) findViewById(R.id.spend_btn);
         mSpendAmt = (EditText) findViewById(R.id.spend_amt);
         mSpendAmt.setRawInputType(Configuration.KEYBOARD_12KEY);
 
         mSpendTag = (EditText) findViewById(R.id.spend_tag);
         mState = AMT_ENTRY;
         updateView();
-
-        mAddButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                switch (mState) {
-                    case TAG_ENTRY:
-                        createDebit();
-                        break;
-                    case AMT_ENTRY:
-                    default:
-                        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        mSpendAmt.requestFocus();
-                        imm.showSoftInput(mSpendAmt, InputMethodManager.SHOW_IMPLICIT);
-                        break;
-                }
-            }
-        });
 
         mSpendAmt.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
