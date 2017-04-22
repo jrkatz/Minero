@@ -20,6 +20,7 @@ package net.jrkatz.minero;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -62,6 +63,11 @@ public class BudgetPeriodView extends FrameLayout {
                 Long.toString(mBudgetPeriod.getRemaining()));
 
         remainingAmt.setText(remainingStr);
+        remainingAmt.setTextColor(
+                mBudgetPeriod.getRemaining() < 0
+                        ? getResources().getColor(R.color.budget_bold_negative, getContext().getTheme())
+                        : getResources().getColor(R.color.budget_bold_positive, getContext().getTheme())
+        );
 
         final TextView periodView = (TextView) findViewById(R.id.period);
         final LocalDate end = mBudgetPeriod.getPeriod().getEnd();
