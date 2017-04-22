@@ -51,7 +51,7 @@ public class BudgetEditView extends ConstraintLayout {
         mEditAmt = (EditText) findViewById(R.id.edit_amt);
     }
 
-    public static interface OnDone {
+    public interface OnDone {
         void onDone(boolean canceled);
     }
 
@@ -86,6 +86,8 @@ public class BudgetEditView extends ConstraintLayout {
                 }
             }
         });
+        mEditAmt.requestFocus();
+        mEditAmt.selectAll();
     }
 
     private Long sanitizeAmt() {

@@ -11,7 +11,7 @@
     <string name="range_format">%1$s to %2$s</string>
     <string name="until_date_format">until %s</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="change_amt_to">Change amount to:</string>
+    <string name="change_amt_to">Change amount to</string>
     <string name="apply_retroactively">Apply retroactively:</string>
     <string name="edit_budget">Edit budget</string>
     <string name="delete">Delete</string>

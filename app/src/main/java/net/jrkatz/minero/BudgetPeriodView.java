@@ -49,13 +49,12 @@ public class BudgetPeriodView extends FrameLayout {
                      @Nullable final DebitListView.ConfirmDebitRemoval debitRemoval) {
         mBudgetPeriod = budgetPeriod;
         mDebitRemoval = debitRemoval;
+        final DebitListView debitList = (DebitListView) findViewById(R.id.debit_list_fragment);
+        debitList.bind(new ArrayList<>(mBudgetPeriod.getDebits()), mDebitRemoval);
         updateView();
     }
 
     public void updateView() {
-        final DebitListView debitList = (DebitListView) findViewById(R.id.debit_list_fragment);
-        debitList.bind(new ArrayList<>(mBudgetPeriod.getDebits()), mDebitRemoval);
-
         final TextView remainingAmt = (TextView) findViewById(R.id.remaining_amt);
         final Resources r = getResources();
         final String remainingStr = String.format(r.getString(R.string.currency_fmt),

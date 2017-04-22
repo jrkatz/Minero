@@ -96,13 +96,10 @@ public class Lander extends AppCompatActivity implements IDataChangeListener {
     protected void onResume() {
         super.onResume();
         rerender();
-        final EditText spendAmt = (EditText)findViewById(R.id.spend_amt);
-        spendAmt.requestFocus();
     }
 
     @Override
     public void rerender() {
-
         refreshBudget();
         final DebitEntryView debitEntryView = (DebitEntryView) findViewById(R.id.debit_entry);
         debitEntryView.setListener(new DebitEntryView.DebitCreationListener() {

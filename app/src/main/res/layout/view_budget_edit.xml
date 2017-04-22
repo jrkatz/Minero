@@ -17,78 +17,65 @@
   ~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<!--TODO if constraint layouts don't suck, I suck with them - either way, this cannot stand-->
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/amt_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/change_amt_to"
         android:textSize="24sp"
+        android:layout_marginTop="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="32dp"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/edit_amt"
-        android:layout_marginRight="8dp" />
+        />
 
-    <EditText
-        android:layout_height="45dp"
-        android:layout_width="81dp"
-        android:inputType="number"
-        android:id="@+id/edit_amt"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toTopOf="@+id/textView1"
-        app:layout_constraintBottom_toBottomOf="@+id/textView1"
-        android:layout_marginBottom="0dp"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent" />
-
-
-    <Button
-        android:id="@+id/btn_ok"
+    <TextView
+        android:id="@+id/currency"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="@android:string/ok"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="9dp"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline2"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/edit_amt"
-        app:layout_constraintHorizontal_bias="0.544"
-        app:layout_constraintVertical_bias="0.498" />
+        android:text="$"
+        android:textSize="72sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/edit_amt"
+        app:layout_constraintEnd_toStartOf="@+id/edit_amt"
+        />
+
+    <EditText
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:inputType="number"
+        android:id="@+id/edit_amt"
+        android:selectAllOnFocus="true"
+        android:textSize="72sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/amt_label"
+        />
 
     <Button
         android:id="@+id/btn_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
         android:text="@android:string/cancel"
-        app:layout_constraintRight_toLeftOf="@+id/guideline2"
-        android:layout_marginRight="8dp"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_ok"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintTop_toTopOf="@+id/btn_ok"
-        android:layout_marginTop="8dp"
-        app:layout_constraintVertical_bias="0.0"
-        app:layout_constraintHorizontal_bias="0.421"
-        app:layout_constraintTop_toBottomOf="@+id/textView1" />
+        android:layout_marginBottom="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_ok"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
 
-    <android.support.constraint.Guideline
+    <Button
+        android:id="@+id/btn_ok"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/guideline2"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+        android:text="@android:string/ok"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn_cancel"
+        app:layout_constraintBaseline_toBaselineOf="@+id/btn_cancel"
+        />
+
 
 </android.support.constraint.ConstraintLayout>
