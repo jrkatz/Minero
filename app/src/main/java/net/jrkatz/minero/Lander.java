@@ -38,23 +38,24 @@ import net.jrkatz.minero.data.ProviderException;
 public class Lander extends AppCompatActivity implements IDataChangeListener {
 
     private void refreshBudget() {
-        BudgetPeriod budgetPeriod;
+        final BudgetPeriod budgetPeriod;
+        final Budget budget;
         try (final IDataContext providerContext = DataContextFactory.getDataContext(this)) {
-            final Budget budget = providerContext.getBudgetProvider().getDefaultBudget(providerContext);
+            budget = providerContext.getBudgetProvider().getDefaultBudget(providerContext);
             budgetPeriod = providerContext.getBudgetPeriodProvider().getCurrentBudgetPeriod(providerContext, budget.getId());
             providerContext.markSuccessful();
         } catch (ProviderException e) {
             //TODO handle
             throw new RuntimeException(e);
         }
-        renderBudget(budgetPeriod);
+        renderBudget(budget, budgetPeriod);
     }
 
-    private void renderBudget(@NonNull final BudgetPeriod budgetPeriod) {
+    private void renderBudget(@NonNull final Budget budget, @NonNull final BudgetPeriod budgetPeriod) {
         final BudgetPeriodView budgetPeriodView = (BudgetPeriodView) findViewById(R.id.budget_period);
         final DebitEntryView debitEntryView = (DebitEntryView) findViewById(R.id.debit_entry);
         debitEntryView.bind(budgetPeriod.getBudgetId());
-        budgetPeriodView.bind(budgetPeriod, new DebitListView.ConfirmDebitRemoval() {
+        budgetPeriodView.bind(budget, budgetPeriod, new DebitListView.ConfirmDebitRemoval() {
             @Override
             public void confirmDebitRemoval(@NonNull final Debit debit) {
                 RemoveDebitFragment.newInstance(debit).show(getFragmentManager(), "remove_debit");

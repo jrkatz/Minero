@@ -23,13 +23,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 
+import com.google.common.io.Resources;
+
 /**
  * @Author jrkatz
  * @Date 2/20/2017.
  */
 
 class BudgetDbHelper extends SQLiteOpenHelper {
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
     private static final String DB_NAME = "minero";
 
     enum Table {
@@ -49,7 +51,8 @@ class BudgetDbHelper extends SQLiteOpenHelper {
                 "id INTEGER PRIMARY KEY ASC," +
                 "distribution INTEGER," +
                 "name TEXT," +
-                "period_definition TEXT" +
+                "period_definition TEXT," +
+                "running_total INTEGER" +
                 ");"),
         BUDGET_PERIOD(1, "CREATE TABLE budget_period(" +
                 "id INTEGER PRIMARY KEY ASC," +
@@ -95,6 +98,13 @@ class BudgetDbHelper extends SQLiteOpenHelper {
             if (newVersion == t.getFirstVersion()) {
                 db.execSQL(t.getSql());
             }
+        }
+
+        switch(newVersion) {
+            case 2:
+                db.execSQL(BudgetSql.BUDGET_UPDATE_2);
+                //OK, now that's done, calculate the running total for all budgets.
+                break;
         }
     }
 

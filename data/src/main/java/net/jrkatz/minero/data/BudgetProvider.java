@@ -39,6 +39,8 @@ public abstract class BudgetProvider<ProviderContext extends IDataContext> {
 
     @NonNull protected abstract Budget setBudgetAmount(@NonNull final ProviderContext context, final long budgetId, final long amount);
 
+    @NonNull protected abstract Budget updateBudgetTotal(@NonNull final ProviderContext context, final long budgetId, final long extraAmount) throws ProviderException;
+
     @NonNull
     public Budget updateBudgetAmount(@NonNull final ProviderContext context, final long budgetId, final long amount) throws ProviderException {
         final Budget budget = setBudgetAmount(context, budgetId, amount);

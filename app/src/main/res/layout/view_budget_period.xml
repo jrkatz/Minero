@@ -20,23 +20,45 @@
     android:layout_height="match_parent"
     >
     <TextView
+        android:id="@+id/remaining_amt"
         android:layout_alignParentTop="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/remaining_amt"
-        android:textSize="@dimen/remaining_text_font_size"/>
+        android:textSize="@dimen/remaining_text_font_size"
+        />
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    <TextView
+        android:id="@+id/period"
         android:layout_below="@id/remaining_amt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/period"/>
+        />
+
+    <TextView
+        android:id="@+id/total_savings_label"
+        android:layout_below="@id/period"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/total_saved"
+        />
+
+    <TextView
+        android:id="@+id/total_savings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/total_savings_label"
+        android:layout_below="@id/period"
+        android:layout_marginStart="5sp"
+        android:text="$0"
+        android:textColor="@color/budget_positive"
+        />
 
     <net.jrkatz.minero.DebitListView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_below="@id/period"
+        android:layout_below="@id/total_savings"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        android:id="@+id/debit_list_fragment"/>
+        android:id="@+id/debit_list_fragment"
+        />
 </RelativeLayout>

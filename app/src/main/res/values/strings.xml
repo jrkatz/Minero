@@ -5,6 +5,7 @@
     <string name="currency_symbol">$</string>
     <!-- string 1 is currency symbol, string 2 currency value -->
     <string name="currency_fmt">%1$s%2$s</string>
+    <string name="total_saved">Total saved: </string>
     <string name="spend">spend</string>
     <string name="spend_for">for</string>
     <string name="ymd_format">YYYY-MM-dd</string>

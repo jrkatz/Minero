@@ -29,17 +29,28 @@ public class Budget implements Parcelable {
     private final PeriodDefinition mPeriodDefinition;
     private final long mDistribution;
     private final String mName;
+    private final long mRunningTotal;
 
     public Budget(
             final long id,
             final PeriodDefinition periodDefinition,
             final long distribution,
-            final String name
+            final String name,
+            final long runningTotal
     ) {
         mId = id;
         mPeriodDefinition = periodDefinition;
         mDistribution = distribution;
         mName = name;
+        mRunningTotal = runningTotal;
+    }
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(mId);
+        dest.writeParcelable(mPeriodDefinition, flags);
+        dest.writeLong(mDistribution);
+        dest.writeString(mName);
+        dest.writeLong(mRunningTotal);
     }
 
     protected Budget(Parcel in) {
@@ -47,7 +58,13 @@ public class Budget implements Parcelable {
         mPeriodDefinition = in.readParcelable(PeriodDefinition.class.getClassLoader());
         mDistribution = in.readLong();
         mName = in.readString();
+        mRunningTotal = in.readLong();
     }
+
+    public long getRunningTotal() {
+        return mRunningTotal;
+    }
+
     public long getDistribution() {
         return mDistribution;
     }
@@ -75,13 +92,5 @@ public class Budget implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(mId);
-        dest.writeParcelable(mPeriodDefinition, flags);
-        dest.writeLong(mDistribution);
-        dest.writeString(mName);
     }
 }
