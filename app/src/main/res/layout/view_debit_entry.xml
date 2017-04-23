@@ -27,8 +27,9 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:inputType="number"
-        android:hint="@string/spend"
         android:imeOptions="actionDone"
+        android:maxLines="1"
+        android:hint="@string/spend"
         />
     <EditText
         android:id="@+id/spend_tag"
@@ -36,6 +37,9 @@
         android:layout_height="wrap_content"
         android:layout_weight="100"
         android:inputType="text"
+        android:imeOptions="actionDone"
+        android:maxLines="1"
         android:hint="@string/spend_for"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        />
 </LinearLayout>
