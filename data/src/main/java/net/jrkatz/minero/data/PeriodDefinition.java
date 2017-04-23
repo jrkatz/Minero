@@ -18,6 +18,7 @@
 
 package net.jrkatz.minero.data;
 
+import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
@@ -79,4 +80,32 @@ public abstract class PeriodDefinition implements Parcelable {
             super("Couldn't parse PeriodDefinition", cause);
         }
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(serialize());
+    }
+
+    public static final Creator<PeriodDefinition> CREATOR = new Creator<PeriodDefinition>() {
+        @Override
+        public PeriodDefinition createFromParcel(Parcel in) {
+            try {
+                return PeriodDefinition.deserialize(in.readString());
+            } catch (PeriodParseException e) {
+                //TODO handle better.
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public PeriodDefinition[] newArray(int size) {
+            return new PeriodDefinition[size];
+        }
+    };
 }

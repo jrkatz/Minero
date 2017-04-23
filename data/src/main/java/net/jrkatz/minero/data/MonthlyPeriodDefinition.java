@@ -18,7 +18,6 @@
 
 package net.jrkatz.minero.data;
 
-import android.os.Parcel;
 import android.support.annotation.NonNull;
 
 import org.joda.time.LocalDate;
@@ -33,11 +32,6 @@ public class MonthlyPeriodDefinition extends PeriodDefinition {
     public MonthlyPeriodDefinition(final int dayStart) {
         mDayStart = dayStart;
     }
-
-    protected MonthlyPeriodDefinition(Parcel in) {
-        mDayStart = in.readInt();
-    }
-
     private LocalDate startForMonth(final int year, final int month) {
         LocalDate firstOfMonth = new LocalDate(year, month, 1);
         return firstOfMonth.withDayOfMonth(
@@ -71,26 +65,4 @@ public class MonthlyPeriodDefinition extends PeriodDefinition {
     static MonthlyPeriodDefinition parseContent(@NonNull final String content) {
         return new MonthlyPeriodDefinition(Integer.parseInt(content));
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(mDayStart);
-    }
-
-    public static final Creator<MonthlyPeriodDefinition> CREATOR = new Creator<MonthlyPeriodDefinition>() {
-        @Override
-        public MonthlyPeriodDefinition createFromParcel(Parcel in) {
-            return new MonthlyPeriodDefinition(in);
-        }
-
-        @Override
-        public MonthlyPeriodDefinition[] newArray(int size) {
-            return new MonthlyPeriodDefinition[size];
-        }
-    };
 }
