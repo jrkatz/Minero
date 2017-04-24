@@ -31,22 +31,24 @@ import com.google.common.io.Resources;
  */
 
 class BudgetDbHelper extends SQLiteOpenHelper {
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
     private static final String DB_NAME = "minero";
 
     enum Table {
-        DEBIT(1, "CREATE TABLE debit(" +
+        DEBIT(3, "CREATE TABLE debit(" +
                 "id INTEGER PRIMARY KEY ASC," +
                 "budget_id INTEGER REFERENCES budget(id) ON DELETE CASCADE," +
                 "budget_period_id INTEGER REFERENCES budget_period(id) ON DELETE CASCADE," +
                 "amount INTEGER," +
                 "description TEXT," +
                 "time INTEGER," +
-                "zone TEXT" +
+                "zone TEXT," +
+                "parent_id INTEGER REFERENCES debit(id)" +
                 ");"),
-        DEBIT_TIME_IDX(1, "CREATE INDEX idx_debit_time ON debit (time)"),
-        DEBIT_PERIOD_IDX(1, "CREATE INDEX idx_debit_period ON debit(budget_period_id)"),
-        DEBIT_BUDGET_IDX(1, "CREATE INDEX idx_debit_budget ON debit(budget_id)"),
+        DEBIT_TIME_IDX(3, "CREATE INDEX idx_debit_time ON debit (time)"),
+        DEBIT_PERIOD_IDX(3, "CREATE INDEX idx_debit_period ON debit(budget_period_id)"),
+        DEBIT_BUDGET_IDX(3, "CREATE INDEX idx_debit_budget ON debit(budget_id)"),
+        DEBIT_PARENT_IDX(3, "CREATE INDEX idx_debit_parent ON debit(parent_id)"),
         BUDGET(1, "CREATE TABLE budget(" +
                 "id INTEGER PRIMARY KEY ASC," +
                 "distribution INTEGER," +
@@ -93,6 +95,15 @@ class BudgetDbHelper extends SQLiteOpenHelper {
     }
 
     private void upgrade(@NonNull final SQLiteDatabase db, int newVersion) {
+        //handle anything that must be done before adding new tables
+        switch(newVersion) {
+            case 3:
+                db.execSQL("ALTER TABLE debit RENAME to tmp_debit");
+                db.execSQL("DROP INDEX idx_debit_time");
+                db.execSQL("DROP INDEX idx_debit_period");
+                db.execSQL("DROP INDEX idx_debit_budget");
+        }
+
         //add missing tables
         for (final Table t : Table.values()) {
             if (newVersion == t.getFirstVersion()) {
@@ -100,10 +111,17 @@ class BudgetDbHelper extends SQLiteOpenHelper {
             }
         }
 
+        //cleanup
         switch(newVersion) {
             case 2:
                 db.execSQL(BudgetSql.BUDGET_UPDATE_2);
                 //OK, now that's done, calculate the running total for all budgets.
+                break;
+            case 3:
+                db.execSQL("INSERT INTO debit (budget_id, budget_period_id, amount, description, time, zone)\n" +
+                        "SELECT budget_id, budget_period_id, amount, description, time, zone\n" +
+                        "FROM tmp_debit");
+                db.execSQL("DROP TABLE tmp_debit");
                 break;
         }
     }
