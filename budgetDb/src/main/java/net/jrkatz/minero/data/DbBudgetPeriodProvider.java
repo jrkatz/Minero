@@ -109,7 +109,7 @@ public class DbBudgetPeriodProvider extends BudgetPeriodProvider<DbDataContext> 
         try(final Cursor cursor = context.getDb().query(
                 "budget_period",
                 new String[] {"id", "budget_id", "distribution", "start", "end"},
-                "id = ?",
+                "budget_id = ?",
                 new String[] {Long.toString(budgetId)},
                 null,
                 null,

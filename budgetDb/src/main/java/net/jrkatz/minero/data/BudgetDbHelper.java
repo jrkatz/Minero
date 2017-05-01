@@ -31,7 +31,7 @@ import com.google.common.io.Resources;
  */
 
 class BudgetDbHelper extends SQLiteOpenHelper {
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 7;
     private static final String DB_NAME = "minero";
 
     enum Table {
@@ -122,6 +122,11 @@ class BudgetDbHelper extends SQLiteOpenHelper {
                         "SELECT budget_id, budget_period_id, amount, description, time, zone\n" +
                         "FROM tmp_debit");
                 db.execSQL("DROP TABLE tmp_debit");
+                break;
+            case 7:
+                db.execSQL(BudgetSql.BUDGET_UPDATE_7_1);
+                db.execSQL(BudgetSql.BUDGET_UPDATE_7_2);
+                db.execSQL(BudgetSql.BUDGET_UPDATE_7_3);
                 break;
         }
     }
