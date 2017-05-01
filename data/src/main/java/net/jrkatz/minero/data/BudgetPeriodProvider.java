@@ -64,7 +64,7 @@ public abstract class BudgetPeriodProvider<ProviderContext extends IDataContext>
             final Period period = periodDefinition.periodForDate(now);
             budgetPeriod = createBudgetPeriod(context, budgetId, budget.getDistribution(), period);
         }
-        else if (budgetPeriod.getPeriod().getEnd().isBefore(now)) {
+        else if (!now.isBefore(budgetPeriod.getPeriod().getEnd())) {
             final BudgetProvider bp = context.getBudgetProvider();
             final Budget budget = bp.getBudget(context, budgetId);
             final PeriodDefinition periodDefinition = budget.getPeriodDefinition();
@@ -74,7 +74,7 @@ public abstract class BudgetPeriodProvider<ProviderContext extends IDataContext>
                 //make subsequent period
                 final Period nextPeriod = periodDefinition.periodForDate(budgetPeriod.getPeriod().getEnd());
                 budgetPeriod = createBudgetPeriod(context, budgetId, budget.getDistribution(), nextPeriod);
-            } while (budgetPeriod.getPeriod().getEnd().isBefore(now));
+            } while (!now.isBefore(budgetPeriod.getPeriod().getEnd()));
         }
         return budgetPeriod;
     }
