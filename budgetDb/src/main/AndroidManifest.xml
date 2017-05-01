@@ -20,6 +20,7 @@
     package="net.jrkatz.minero.db">
 
     <application android:allowBackup="true" android:label="@string/app_name"
+        android:name="net.jrkatz.minero.data.BudgetApplication"
         android:supportsRtl="true">
 
     </application>
