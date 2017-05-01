@@ -48,9 +48,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.1.1'
     compile group: 'com.google.guava', name: 'guava', version: '20.0'
     compile 'joda-time:joda-time:2.9.7'
-    //TODO set up source variants so stetho is only compiled in in debug, using:
-    //debugCompile 'com.facebook.stetho:stetho:1.5.0'
-    compile 'com.facebook.stetho:stetho:1.5.0'
+    debugCompile 'com.facebook.stetho:stetho:1.5.0'
 
     testCompile 'junit:junit:4.12'
     compile project(path: ':data')
