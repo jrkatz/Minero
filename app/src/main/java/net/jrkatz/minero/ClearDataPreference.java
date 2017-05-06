@@ -41,6 +41,8 @@ public class ClearDataPreference extends DialogPreference{
         super.onDialogClosed(positiveResult);
         if (positiveResult) {
             try (final IDataContext providerContext = DataContextFactory.getDataContext(getContext())) {
+                //TODO this should, instead of actually deleting things, just create a new Budget and set it as default.
+                //That way if anyone regrets doing this, it can be trivially undone.
                 providerContext.getDebitProvider().clearDebits(providerContext);
                 providerContext.getBudgetPeriodProvider().clearBudgetPeriods(providerContext);
                 providerContext.markSuccessful();
