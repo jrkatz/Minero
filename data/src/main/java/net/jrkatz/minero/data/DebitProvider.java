@@ -88,12 +88,14 @@ public abstract class DebitProvider<ProviderContext extends IDataContext> {
         final Debit firstParent = getDebitOrThrow(context, debitId);
         Debit parent = firstParent;
 
+        //calculate the current amount this chain of debits represents
         int currentAmount = firstParent.getAmount();
         while (parent.getParentId() != null) {
             parent = getDebitOrThrow(context, parent.getParentId());
             currentAmount += parent.getAmount();
         }
 
+        //calculate the amount needed to reach the target amount.
         final int amount = newAmount - currentAmount;
 
         //if we're altering a period that has already passed, it has been applied to the running total

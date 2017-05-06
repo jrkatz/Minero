@@ -20,6 +20,7 @@ package net.jrkatz.minero.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.joda.time.DateTime;
@@ -29,7 +30,7 @@ import org.joda.time.DateTimeZone;
  * @Author jrkatz
  * @Date 2/19/2017.
  */
-public class Debit implements Parcelable {
+public class Debit implements Parcelable, Comparable<Debit> {
 
     public static final int NO_PARENT = -1;
     private final long mId;
@@ -116,5 +117,28 @@ public class Debit implements Parcelable {
         mTime = new DateTime(in.readLong())
                 .withZone(DateTimeZone.forID(in.readString()));
         mParentId = in.readLong();
+    }
+
+    @Override
+    public int compareTo(@NonNull Debit o) {
+        return this.getTime().compareTo(o.getTime());
+    }
+
+    @Override
+    public boolean equals(@Nullable Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (o == null || ! (o instanceof Debit)) {
+            return false;
+        }
+
+        final Debit d = (Debit) o;
+        return d.getId() == getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return new Long(getId()).hashCode();
     }
 }

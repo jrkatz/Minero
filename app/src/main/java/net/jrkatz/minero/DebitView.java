@@ -33,8 +33,6 @@ import net.jrkatz.minero.data.Debit;
  */
 
 public class DebitView extends RelativeLayout {
-
-
     public DebitView(Context context, AttributeSet attrs) {
         super(context, attrs);
         View.inflate(context, R.layout.view_debit, this);
@@ -55,5 +53,22 @@ public class DebitView extends RelativeLayout {
         time.setText(debit.getTime().toString());
     }
 
+    /**
+     * bind a DebitListEntry to be rendered as a single, imaginary debit.
+     * @param entry
+     */
+    public void bind(DebitListEntry entry) {
+        final TextView amount = (TextView) findViewById(R.id.amount);
+        final TextView description = (TextView) findViewById(R.id.description);
+        final TextView time = (TextView) findViewById(R.id.time);
 
+        final Resources r = getResources();
+        final String amountStr = String.format(r.getString(R.string.currency_fmt),
+                r.getString(R.string.currency_symbol),
+                Long.toString(entry.getAmount()));
+
+        amount.setText(amountStr);
+        description.setText(entry.getDescription());
+        time.setText(entry.getTime().toString());
+    }
 }

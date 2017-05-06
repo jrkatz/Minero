@@ -26,6 +26,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.View;
 
 import net.jrkatz.minero.data.BudgetPeriod;
@@ -42,26 +43,26 @@ import net.jrkatz.minero.data.ProviderException;
 public class RemoveDebitFragment extends DialogFragment {
     IDataChangeListener mListener;
 
-    public static RemoveDebitFragment newInstance(final Debit debit) {
+    public static RemoveDebitFragment newInstance(@NonNull final DebitListEntry entry) {
         Bundle args = new Bundle();
-        args.putParcelable("debit", debit);
+        args.putParcelable("entry", entry);
         RemoveDebitFragment fragment = new RemoveDebitFragment();
         fragment.setArguments(args);
         return fragment;
     }
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        final Debit debit = getArguments().getParcelable("debit");
+        final DebitListEntry entry = getArguments().getParcelable("entry");
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         DebitView debitView = new DebitView(getContext(), null);
-        debitView.bind(debit);
+        debitView.bind(entry);
         builder.setMessage("Delete debit entry?")
                 .setView(debitView)
                 .setPositiveButton(getResources().getText(R.string.delete), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         try(final IDataContext dataContext = DataContextFactory.getDataContext(getContext())) {
-                            dataContext.getDebitProvider().amendDebit(dataContext, debit.getId(), 0);
+                            dataContext.getDebitProvider().amendDebit(dataContext, entry.getLastId(), 0);
                             dataContext.markSuccessful();
                         } catch (ProviderException e) {
                             //TODO handle better

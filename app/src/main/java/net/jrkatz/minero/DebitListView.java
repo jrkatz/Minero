@@ -30,6 +30,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.common.collect.ImmutableList;
+
 import net.jrkatz.minero.data.Debit;
 
 import java.util.ArrayList;
@@ -39,7 +41,7 @@ import java.util.List;
  * A ScrollView subclass for displaying lists of Debit actions
  */
 public class DebitListView extends ListView {
-    private ArrayList<Debit> mDebits;
+    private ImmutableList<DebitListEntry> mEntries;
     private DebitsAdapter mAdapter;
     private ConfirmDebitRemoval mDebitRemoval;
 
@@ -48,12 +50,12 @@ public class DebitListView extends ListView {
     }
 
     public interface ConfirmDebitRemoval {
-        void confirmDebitRemoval(@NonNull final Debit debit);
+        void confirmDebitRemoval(@NonNull final DebitListEntry entry);
     }
 
     public void bind(final @NonNull ArrayList<Debit> debits, @Nullable final ConfirmDebitRemoval debitRemoval) {
-        mDebits = debits;
-        mAdapter = new DebitsAdapter(getContext(), mDebits);
+        mEntries = DebitListEntry.makeEntries(debits);
+        mAdapter = new DebitsAdapter(getContext(), mEntries);
         mDebitRemoval = debitRemoval;
         updateView();
     }
@@ -62,19 +64,19 @@ public class DebitListView extends ListView {
         this.setAdapter(mAdapter);
     }
 
-    private class DebitsAdapter extends ArrayAdapter<Debit> {
-        public DebitsAdapter(Context context, List<Debit> debits) {
+    private class DebitsAdapter extends ArrayAdapter<DebitListEntry> {
+        public DebitsAdapter(Context context, List<DebitListEntry> debits) {
             super(context, 0, debits);
         }
 
         @Override
         public View getView(int position, View view, ViewGroup parent) {
-            final Debit debit = getItem(position);
+            final DebitListEntry entry = getItem(position);
             if (view == null) {
-                view = new DebitView(getContext(), null);
+                view = new DebitListEntryView(getContext(), null);
             }
 
-            ((DebitView) view).bind(debit);
+            ((DebitListEntryView) view).bind(entry);
 
             view.setOnLongClickListener(new OnLongClickListener() {
                 @Override
@@ -82,7 +84,7 @@ public class DebitListView extends ListView {
                     if (mDebitRemoval == null) {
                         return false;
                     }
-                    mDebitRemoval.confirmDebitRemoval(debit);
+                    mDebitRemoval.confirmDebitRemoval(entry);
                     return true;
                 }
             });

@@ -17,11 +17,13 @@
   ~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
-
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
     <TextView
         android:layout_alignParentStart="true"
         android:layout_width="wrap_content"
@@ -45,4 +47,5 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/debit_detail_font_size"
         android:id="@+id/time"/>
-</RelativeLayout>
+    </RelativeLayout>
+</FrameLayout>

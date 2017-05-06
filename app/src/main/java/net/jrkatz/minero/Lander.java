@@ -57,8 +57,8 @@ public class Lander extends AppCompatActivity implements IDataChangeListener {
         debitEntryView.bind(budgetPeriod.getBudgetId());
         budgetPeriodView.bind(budget, budgetPeriod, new DebitListView.ConfirmDebitRemoval() {
             @Override
-            public void confirmDebitRemoval(@NonNull final Debit debit) {
-                RemoveDebitFragment.newInstance(debit).show(getFragmentManager(), "remove_debit");
+            public void confirmDebitRemoval(@NonNull final DebitListEntry entry) {
+                RemoveDebitFragment.newInstance(entry).show(getFragmentManager(), "remove_debit");
             }
         });
     }
