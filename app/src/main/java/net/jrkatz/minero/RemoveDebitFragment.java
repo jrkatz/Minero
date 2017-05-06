@@ -28,6 +28,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 
+import net.jrkatz.minero.data.BudgetPeriod;
 import net.jrkatz.minero.data.DataContextFactory;
 import net.jrkatz.minero.data.Debit;
 import net.jrkatz.minero.data.IDataChangeListener;
@@ -60,7 +61,7 @@ public class RemoveDebitFragment extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         try(final IDataContext dataContext = DataContextFactory.getDataContext(getContext())) {
-                            dataContext.getDebitProvider().removeDebit(dataContext, debit.getId());
+                            dataContext.getDebitProvider().amendDebit(dataContext, debit.getId(), 0);
                             dataContext.markSuccessful();
                         } catch (ProviderException e) {
                             //TODO handle better

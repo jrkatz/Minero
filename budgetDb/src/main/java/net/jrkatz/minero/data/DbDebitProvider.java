@@ -22,11 +22,14 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+
+import java.sql.Date;
 
 /**
  * @Author jrkatz
@@ -34,7 +37,7 @@ import org.joda.time.DateTimeZone;
  */
 
 public class DbDebitProvider extends DebitProvider<DbDataContext> {
-    private static final String[] COLUMNS = new String[]{"id", "budget_id", "budget_period_id", "amount", "description", "time", "zone"};
+    private static final String[] COLUMNS = new String[]{"id", "budget_id", "budget_period_id", "amount", "description", "time", "zone", "parent_id"};
     private static final String TABLE_NAME = "debit";
 
     @Override
@@ -53,14 +56,28 @@ public class DbDebitProvider extends DebitProvider<DbDataContext> {
         return debits.build();
     }
 
+    @Nullable
     @Override
+    public Debit getDebit(@NonNull DbDataContext context, long debitId) {
+        try (Cursor cursor = debitQuery(context.getDb(),
+                "id = ?",
+                Long.toString(debitId))) {
+            if (cursor.moveToFirst()) {
+                return atCursor(cursor);
+            }
+        }
+
+        return null;
+    }
+
     @NonNull
-    public Debit createDebit(@NonNull final DbDataContext context,
-                                       final long budgetId,
-                                       final long budgetPeriodId,
-                                       final int amount,
-                                       final String description,
-                                       final DateTime time) {
+    Debit createDebit(@NonNull final DbDataContext context,
+                             final long budgetId,
+                             final long budgetPeriodId,
+                             final int amount,
+                             final String description,
+                             final DateTime time,
+                             final Long parentId) {
         ContentValues values = new ContentValues();
         values.put("amount", amount);
         values.put("budget_id", budgetId);
@@ -69,8 +86,9 @@ public class DbDebitProvider extends DebitProvider<DbDataContext> {
         //without the explicit Long boxing this is boxed & truncated into an Integer.
         values.put("time", Long.valueOf(time.toDate().getTime()));
         values.put("zone", time.getZone().getID());
+        values.put("parent_id", parentId);
         long id = context.getDb().insertOrThrow("debit", null, values);
-        return new Debit(id, budgetId, budgetPeriodId, amount, description, time);
+        return new Debit(id, budgetId, budgetPeriodId, amount, description, time, parentId);
     }
 
     @Override
@@ -78,13 +96,9 @@ public class DbDebitProvider extends DebitProvider<DbDataContext> {
         context.getDb().delete(TABLE_NAME, null, new String[0]);
     }
 
-    @Override
-    public boolean removeDebit(@NonNull DbDataContext context, long debitId) throws ProviderException {
-        final int result = context.getDb().delete("debit", "id = ?", new String[]{Long.toString(debitId)});
-        return result > 0;
-    }
-
-    Cursor debitQuery(SQLiteDatabase db, String where, String ... whereArgs) {
+    Cursor debitQuery(@NonNull final SQLiteDatabase db,
+                      @NonNull final String where,
+                      @NonNull final String ... whereArgs) {
         return db.query(TABLE_NAME,
                 COLUMNS,
                 where,
@@ -92,13 +106,14 @@ public class DbDebitProvider extends DebitProvider<DbDataContext> {
                 null, null, null);
     }
 
-    Debit atCursor(final Cursor cursor) {
+    Debit atCursor(@NonNull final Cursor cursor) {
         return new Debit(cursor.getLong(0),
                 cursor.getLong(1),
                 cursor.getLong(2),
                 cursor.getInt(3),
                 cursor.getString(4),
                 new DateTime(cursor.getLong(5))
-                        .withZone(DateTimeZone.forID(cursor.getString(6))));
+                        .withZone(DateTimeZone.forID(cursor.getString(6))),
+                cursor.isNull(7) ? null : cursor.getLong(7));
     }
 }

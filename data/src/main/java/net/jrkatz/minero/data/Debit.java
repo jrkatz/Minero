@@ -20,6 +20,7 @@ package net.jrkatz.minero.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -30,20 +31,23 @@ import org.joda.time.DateTimeZone;
  */
 public class Debit implements Parcelable {
 
+    public static final int NO_PARENT = -1;
     private final long mId;
     private final long mBudgetId;
     private final long mBudgetPeriodId;
     private final int mAmount;
     private final String mDescription;
     private final DateTime mTime;
+    private final long mParentId;
 
-    protected Debit(long id, long budgetId, long budgetPeriodId, int amount, String description, DateTime time) {
+    protected Debit(long id, long budgetId, long budgetPeriodId, int amount, String description, DateTime time, @Nullable Long parentId) {
         mId = id;
         mBudgetId = budgetId;
         mBudgetPeriodId = budgetPeriodId;
         mAmount = amount;
         mDescription = description;
         mTime = time;
+        mParentId = parentId == null ? NO_PARENT : parentId;
     }
 
     public static final Creator<Debit> CREATOR = new Creator<Debit>() {
@@ -60,6 +64,18 @@ public class Debit implements Parcelable {
 
     public long getId() {
         return mId;
+    }
+
+    public long getBudgetId() {
+        return mBudgetId;
+    }
+
+    public Long getParentId() {
+        return mParentId != NO_PARENT ? mParentId : null;
+    }
+
+    public long getBudgetPeriodId() {
+        return mBudgetPeriodId;
     }
 
     public int getAmount() {
@@ -88,6 +104,7 @@ public class Debit implements Parcelable {
         dest.writeString(mDescription);
         dest.writeLong(mTime.toDate().getTime());
         dest.writeString(mTime.getZone().getID());
+        dest.writeLong(mParentId);
     }
 
     protected Debit(Parcel in) {
@@ -98,5 +115,6 @@ public class Debit implements Parcelable {
         mDescription = in.readString();
         mTime = new DateTime(in.readLong())
                 .withZone(DateTimeZone.forID(in.readString()));
+        mParentId = in.readLong();
     }
 }

@@ -24,7 +24,16 @@ package net.jrkatz.minero.data;
  */
 
 public class ProviderException extends Exception {
-    ProviderException(Exception e) {
+    ProviderException(Throwable e) {
         super(e);
     }
+
+    ProviderException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    ProviderException(String message) {
+        super(message);
+    }
+
 }

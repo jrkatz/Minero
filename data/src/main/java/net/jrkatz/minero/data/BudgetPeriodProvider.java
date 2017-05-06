@@ -70,7 +70,7 @@ public abstract class BudgetPeriodProvider<ProviderContext extends IDataContext>
             final PeriodDefinition periodDefinition = budget.getPeriodDefinition();
             do {
                 //add savings from previous period
-                bp.updateBudgetTotal(context, budgetId, budgetPeriod.getRemaining());
+                bp.setBudgetRunningTotal(context, budgetId, budgetPeriod.getRemaining());
                 //make subsequent period
                 final Period nextPeriod = periodDefinition.periodForDate(budgetPeriod.getPeriod().getEnd());
                 budgetPeriod = createBudgetPeriod(context, budgetId, budget.getDistribution(), nextPeriod);

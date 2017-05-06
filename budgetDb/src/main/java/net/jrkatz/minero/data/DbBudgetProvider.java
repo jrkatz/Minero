@@ -66,7 +66,7 @@ public class DbBudgetProvider extends BudgetProvider<DbDataContext> {
 
     @NonNull
     @Override
-    protected Budget updateBudgetTotal(@NonNull DbDataContext context, long budgetId, long extraAmount) {
+    protected Budget setBudgetRunningTotal(@NonNull DbDataContext context, long budgetId, long extraAmount) {
         final Budget budget = getBudget(context, budgetId);
         final long newAmt = budget.getRunningTotal() + extraAmount;
         final ContentValues values = new ContentValues();

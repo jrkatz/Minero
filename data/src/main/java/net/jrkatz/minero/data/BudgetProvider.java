@@ -19,6 +19,7 @@
 package net.jrkatz.minero.data;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 /**
  * @Author jrkatz
@@ -32,14 +33,32 @@ public abstract class BudgetProvider<ProviderContext extends IDataContext> {
                                       final long distribution,
                                       @NonNull final String name) throws ProviderException;
 
+    @Nullable
     public abstract Budget getBudget(@NonNull final ProviderContext context,
                                      final long id) throws ProviderException;
+
+    @NonNull
+    public Budget getBudgetOrThrow(@NonNull final ProviderContext context,
+                                            final long id) throws ProviderException {
+        final Budget budget = getBudget(context, id);
+        if (budget == null) {
+            throw new ProviderException(String.format("No budget with id %d", id));
+        }
+        return budget;
+    }
 
     public abstract Budget getDefaultBudget(@NonNull final ProviderContext context) throws ProviderException;
 
     @NonNull protected abstract Budget setBudgetAmount(@NonNull final ProviderContext context, final long budgetId, final long amount);
 
-    @NonNull protected abstract Budget updateBudgetTotal(@NonNull final ProviderContext context, final long budgetId, final long extraAmount) throws ProviderException;
+    @NonNull protected abstract Budget setBudgetRunningTotal(@NonNull final ProviderContext context, final long budgetId, final long extraAmount) throws ProviderException;
+
+    @NonNull public Budget updateBudgetRunningTotal(@NonNull final ProviderContext context,
+                                                    final long budgetId,
+                                                    final long additionalAmount) throws ProviderException {
+        final Budget b = getBudgetOrThrow(context, budgetId);
+        return setBudgetRunningTotal(context, budgetId, b.getRunningTotal() + additionalAmount);
+    }
 
     @NonNull
     public Budget updateBudgetAmount(@NonNull final ProviderContext context, final long budgetId, final long amount) throws ProviderException {
