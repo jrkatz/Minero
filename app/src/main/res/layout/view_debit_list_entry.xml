@@ -17,16 +17,27 @@
   ~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minHeight="5dp"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/budget_negative"
+    android:layout_height="wrap_content"
+    android:minHeight="5dp"
     >
+
+    <net.jrkatz.minero.DebitParentsView
+        android:id="@+id/parents_view"
+        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:background="@android:color/white"
+        />
+
     <net.jrkatz.minero.DebitView
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:id="@+id/debit_view"
         android:background="@android:color/white"
         />
-</FrameLayout>
+</LinearLayout>

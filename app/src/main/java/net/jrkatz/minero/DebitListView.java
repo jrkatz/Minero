@@ -20,6 +20,7 @@ package net.jrkatz.minero;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -35,6 +36,8 @@ import com.google.common.collect.ImmutableList;
 import net.jrkatz.minero.data.Debit;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -65,27 +68,45 @@ public class DebitListView extends ListView {
     }
 
     private class DebitsAdapter extends ArrayAdapter<DebitListEntry> {
+        //TODO add setting so users can choose to expand or collapse histories by default
+        //TODO add setting to completely suppress deletions by default.
+        private final HashSet<Integer> mExpanded = new HashSet<>();
         public DebitsAdapter(Context context, List<DebitListEntry> debits) {
             super(context, 0, debits);
         }
 
         @Override
-        public View getView(int position, View view, ViewGroup parent) {
+        public View getView(final int position, View view, ViewGroup parent) {
             final DebitListEntry entry = getItem(position);
             if (view == null) {
                 view = new DebitListEntryView(getContext(), null);
             }
-
-            ((DebitListEntryView) view).bind(entry);
-
+            final DebitListEntryView v = (DebitListEntryView) view;
+            v.bind(entry, mExpanded.contains(position));
             view.setOnLongClickListener(new OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    if (mDebitRemoval == null) {
-                        return false;
+                    if (mDebitRemoval != null && entry.getAmount() != 0) {
+                        mDebitRemoval.confirmDebitRemoval(entry);
                     }
-                    mDebitRemoval.confirmDebitRemoval(entry);
                     return true;
+                }
+            });
+
+            view.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (!mExpanded.remove(position)) {
+                        mExpanded.add(position);
+                    }
+                    v.bind(entry, mExpanded.contains(position));
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            smoothScrollToPosition(position);
+                        }
+                    }, 50);
                 }
             });
             return view;

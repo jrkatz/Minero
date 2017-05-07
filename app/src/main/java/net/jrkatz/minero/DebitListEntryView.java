@@ -30,18 +30,59 @@ import android.widget.FrameLayout;
  */
 
 public class DebitListEntryView extends FrameLayout {
+
     public DebitListEntryView(Context context, AttributeSet attrs) {
         super(context, attrs);
         View.inflate(context, R.layout.view_debit_list_entry, this);
     }
 
-    public void bind(@NonNull final DebitListEntry entry) {
+    public void bind(@NonNull final DebitListEntry entry, final boolean expanded) {
         final DebitView debitView = (DebitView) findViewById(R.id.debit_view);
+        if (entry.getAmount() == 0) {
+            setBackgroundColor(getResources().getColor(R.color.budget_negative, getContext().getTheme()));
+        } else {
+            setBackgroundColor(getResources().getColor(R.color.light_background, getContext().getTheme()));
+        }
         debitView.bind(entry);
+        setCollapsed(entry);
+        if (expanded) {
+            setExpanded(entry);
+        } else {
+            setCollapsed(entry);
+        }
+    }
+
+    private void showParents(final DebitListEntry entry, final DebitParentsView parentsView) {
+        if (entry.getDebits().size() > 1) {
+            parentsView.bind(entry.getDebits());
+            parentsView.setVisibility(View.VISIBLE);
+        }
+        else {
+            hideParents(parentsView);
+        }
+    }
+
+    private void hideParents(final DebitParentsView parentsView) {
+        parentsView.unbind();
+        parentsView.setVisibility(View.GONE);
+    }
+
+    protected void setCollapsed(final DebitListEntry entry) {
+        final DebitView debitView = (DebitView) findViewById(R.id.debit_view);
+        final DebitParentsView parentsView = (DebitParentsView) findViewById(R.id.parents_view);
+        hideParents(parentsView);
         if (entry.getAmount() == 0) {
             debitView.setVisibility(View.GONE);
-        } else {
-            debitView.setVisibility(VISIBLE);
         }
+        else {
+            debitView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    protected void setExpanded(final DebitListEntry entry) {
+        final DebitView debitView = (DebitView) findViewById(R.id.debit_view);
+        final DebitParentsView parentsView = (DebitParentsView) findViewById(R.id.parents_view);
+        showParents(entry, parentsView);
+        debitView.setVisibility(View.VISIBLE);
     }
 }

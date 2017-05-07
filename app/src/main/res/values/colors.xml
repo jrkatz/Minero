@@ -22,4 +22,5 @@
     <color name="budget_positive">#525252</color>
     <color name="budget_bold_negative">#C83232</color>
     <color name="budget_negative">#C85252</color>
+    <color name="light_background">#A0A0A0</color>
 </resources>

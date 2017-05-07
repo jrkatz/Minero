@@ -80,6 +80,10 @@ public class DebitListEntry implements Parcelable {
         }
     };
 
+    public ImmutableList<Debit> getDebits() {
+        return mDebits;
+    }
+
     public String getDescription() {
         return mDescription;
     }
