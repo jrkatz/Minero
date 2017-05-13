@@ -24,5 +24,5 @@ package net.jrkatz.minero.data;
  */
 
 public interface IDataChangeListener {
-    void rerender();
+    void dataChanged();
 }

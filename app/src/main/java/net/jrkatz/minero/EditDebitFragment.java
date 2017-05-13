@@ -27,11 +27,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.view.View;
 
-import net.jrkatz.minero.data.BudgetPeriod;
 import net.jrkatz.minero.data.DataContextFactory;
-import net.jrkatz.minero.data.Debit;
+import net.jrkatz.minero.data.DebitConsumer;
 import net.jrkatz.minero.data.IDataChangeListener;
 import net.jrkatz.minero.data.IDataContext;
 import net.jrkatz.minero.data.ProviderException;
@@ -40,13 +38,13 @@ import net.jrkatz.minero.data.ProviderException;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RemoveDebitFragment extends DialogFragment {
+public class EditDebitFragment extends DialogFragment {
     IDataChangeListener mListener;
 
-    public static RemoveDebitFragment newInstance(@NonNull final DebitListEntry entry) {
+    public static EditDebitFragment newInstance(@NonNull final DebitListEntry entry) {
         Bundle args = new Bundle();
         args.putParcelable("entry", entry);
-        RemoveDebitFragment fragment = new RemoveDebitFragment();
+        EditDebitFragment fragment = new EditDebitFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -54,14 +52,28 @@ public class RemoveDebitFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final DebitListEntry entry = getArguments().getParcelable("entry");
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        DebitView debitView = new DebitView(getContext(), null);
-        debitView.bind(entry);
-        builder.setMessage("Delete debit entry?")
-                .setView(debitView)
-                .setPositiveButton(getResources().getText(R.string.delete), new DialogInterface.OnClickListener() {
+        final DebitEntryView debitEntryView = new DebitEntryView(getContext(), null);
+        debitEntryView.bind(new DebitConsumer(mListener) {
+            @Override
+            protected boolean _consume(int amount, String description) {
+                try(final IDataContext dataContext = DataContextFactory.getDataContext(getContext())) {
+                    dataContext.getDebitProvider().amendDebit(dataContext, entry.getLastId(), amount, description);
+                    dataContext.markSuccessful();
+                } catch (ProviderException e) {
+                    //TODO handle better
+                    throw new RuntimeException(e);
+                }
+                getDialog().dismiss();
+                return true;
+            }
+        }, entry);
+
+        builder.setMessage("Edit debit entry?")
+                .setView(debitEntryView)
+                .setNeutralButton(getResources().getText(R.string.delete),new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        try(final IDataContext dataContext = DataContextFactory.getDataContext(getContext())) {
+                        try (final IDataContext dataContext = DataContextFactory.getDataContext(getContext())) {
                             dataContext.getDebitProvider().amendDebit(dataContext, entry.getLastId(), 0);
                             dataContext.markSuccessful();
                         } catch (ProviderException e) {
@@ -69,8 +81,16 @@ public class RemoveDebitFragment extends DialogFragment {
                             throw new RuntimeException(e);
                         }
                         if (mListener != null) {
-                            mListener.rerender();
+                            mListener.dataChanged();
                         }
+                    }
+                })
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        debitEntryView.finishEntry(); //If for whatever reason this doesn't work
+                        //(like the amount field is blank, etc), that's OK. They must have decided
+                        //against changes.
                     }
                 })
                 .setNegativeButton(getResources().getText(

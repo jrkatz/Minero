@@ -26,19 +26,11 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import net.jrkatz.minero.data.BudgetPeriod;
-import net.jrkatz.minero.data.DataContextFactory;
-import net.jrkatz.minero.data.Debit;
-import net.jrkatz.minero.data.IDataContext;
-import net.jrkatz.minero.data.ProviderException;
-
-import org.joda.time.DateTime;
+import net.jrkatz.minero.data.DebitConsumer;
 
 /**
  * @Author jrkatz
@@ -49,7 +41,7 @@ public class DebitEntryView extends FrameLayout {
     private static final int AMT_ENTRY = 0;
     private static final int TAG_ENTRY = 1;
 
-    private DebitCreationListener mListener = null;
+    private DebitConsumer mConsumer = null;
     private final EditText mSpendAmt;
     private final EditText mSpendTag;
 
@@ -104,15 +96,23 @@ public class DebitEntryView extends FrameLayout {
             public boolean onEditorAction(TextView spendAmt, int actionId, KeyEvent event) {
                 switch (actionId) {
                     case EditorInfo.IME_ACTION_DONE:
-                        createDebit();
+                        finishEntry();
                 }
                 return true;
             }
         });
     }
 
-    public void bind(final long budgetId) {
-        mBudgetId = budgetId;
+    public void bind(final DebitConsumer consumer) {
+        mConsumer = consumer;
+    }
+
+    public void bind (final DebitConsumer consumer, DebitListEntry entry) {
+        bind(consumer);
+        mSpendAmt.setText(Integer.toString(entry.getAmount()));
+        mSpendTag.setText(entry.getDescription());
+        mState = TAG_ENTRY;
+        updateView();
     }
 
     private Integer sanitizeAmt() {
@@ -169,43 +169,20 @@ public class DebitEntryView extends FrameLayout {
         }
     }
 
-    private void createDebit() {
+    public boolean finishEntry() {
         final Integer amt = sanitizeAmt();
         if (amt == null) {
-            return;
+            return false;
         }
         final String tag = mSpendTag.getText().toString();
-        final Debit debit;
-        try (final IDataContext providerContext = DataContextFactory.getDataContext(getContext())) {
-            final BudgetPeriod budgetPeriod = providerContext.getBudgetPeriodProvider().getCurrentBudgetPeriod(providerContext, mBudgetId);
-            debit = providerContext.getDebitProvider().createDebit(
-                    providerContext,
-                    budgetPeriod.getBudgetId(),
-                    budgetPeriod.getId(),
-                    amt,
-                    tag,
-                    DateTime.now());
-            providerContext.markSuccessful();
-        } catch (ProviderException e) {
-            //TODO handle better
-            throw new RuntimeException(e);
+        if (!mConsumer.consume(amt, tag)) {
+            return false;
         }
-        mListener.onDebitCreated(debit);
 
         mSpendTag.setText("");
         mSpendAmt.setText("");
         mState = AMT_ENTRY;
         updateView();
-    }
-
-    //I don't really like this model of effecting changes. I'd rather register
-    //this with a data source and supply changes directly to it, and let it invalidate
-    //views of that data. But this is faster for now.
-    public void setListener(final DebitCreationListener listener) {
-        mListener = listener;
-    }
-
-    public interface DebitCreationListener {
-        void onDebitCreated(Debit debit);
+        return true;
     }
 }

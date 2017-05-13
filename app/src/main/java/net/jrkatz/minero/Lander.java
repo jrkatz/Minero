@@ -18,6 +18,7 @@
 
 package net.jrkatz.minero;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,12 +26,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
 
 import net.jrkatz.minero.data.Budget;
 import net.jrkatz.minero.data.BudgetPeriod;
 import net.jrkatz.minero.data.DataContextFactory;
 import net.jrkatz.minero.data.Debit;
+import net.jrkatz.minero.data.DebitConsumer;
 import net.jrkatz.minero.data.IDataChangeListener;
 import net.jrkatz.minero.data.IDataContext;
 import net.jrkatz.minero.data.ProviderException;
@@ -54,11 +55,17 @@ public class Lander extends AppCompatActivity implements IDataChangeListener {
     private void renderBudget(@NonNull final Budget budget, @NonNull final BudgetPeriod budgetPeriod) {
         final BudgetPeriodView budgetPeriodView = (BudgetPeriodView) findViewById(R.id.budget_period);
         final DebitEntryView debitEntryView = (DebitEntryView) findViewById(R.id.debit_entry);
-        debitEntryView.bind(budgetPeriod.getBudgetId());
+        final Context context = this;
+        debitEntryView.bind(new DebitConsumer.DebitCreator(this, budget.getId()) {
+            @Override
+            protected IDataContext getDataContext() {
+                return DataContextFactory.getDataContext(context);
+            }
+        });
         budgetPeriodView.bind(budget, budgetPeriod, new DebitListView.ConfirmDebitRemoval() {
             @Override
             public void confirmDebitRemoval(@NonNull final DebitListEntry entry) {
-                RemoveDebitFragment.newInstance(entry).show(getFragmentManager(), "remove_debit");
+                EditDebitFragment.newInstance(entry).show(getFragmentManager(), "remove_debit");
             }
         });
     }
@@ -96,18 +103,11 @@ public class Lander extends AppCompatActivity implements IDataChangeListener {
     @Override
     protected void onResume() {
         super.onResume();
-        rerender();
+        dataChanged();
     }
 
     @Override
-    public void rerender() {
+    public void dataChanged() {
         refreshBudget();
-        final DebitEntryView debitEntryView = (DebitEntryView) findViewById(R.id.debit_entry);
-        debitEntryView.setListener(new DebitEntryView.DebitCreationListener() {
-            @Override
-            public void onDebitCreated(Debit debit) {
-                refreshBudget();
-            }
-        });
     }
 }

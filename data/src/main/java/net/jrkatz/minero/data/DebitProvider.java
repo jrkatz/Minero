@@ -83,6 +83,43 @@ public abstract class DebitProvider<ProviderContext extends IDataContext> {
         );
     }
 
+    //TODO lots of redundant code here. This can clearly be cleaned up
+    @NonNull
+    public Debit amendDebit(@NonNull final ProviderContext context, long debitId, int newAmount, String description) throws ProviderException {
+        final Debit firstParent = getDebitOrThrow(context, debitId);
+        Debit parent = firstParent;
+
+        //calculate the current amount this chain of debits represents
+        int currentAmount = firstParent.getAmount();
+        while (parent.getParentId() != null) {
+            parent = getDebitOrThrow(context, parent.getParentId());
+            currentAmount += parent.getAmount();
+        }
+
+        //calculate the amount needed to reach the target amount.
+        final int amount = newAmount - currentAmount;
+
+        //if we're altering a period that has already passed, it has been applied to the running total
+        //so that must be updated as well.
+        final BudgetPeriod bp = context.getBudgetPeriodProvider().getCurrentBudgetPeriod(context, firstParent.getBudgetId());
+        if (bp.getId() != firstParent.getBudgetPeriodId()) {
+            context.getBudgetProvider().updateBudgetRunningTotal(
+                    context,
+                    firstParent.getBudgetId(),
+                    amount);
+        }
+
+        return createDebit(
+                context,
+                firstParent.getBudgetId(),
+                firstParent.getBudgetPeriodId(),
+                amount,
+                description,
+                DateTime.now(),
+                firstParent.getId()
+        );
+    }
+
     @NonNull
     public Debit amendDebit(@NonNull final ProviderContext context, long debitId, int newAmount) throws ProviderException {
         final Debit firstParent = getDebitOrThrow(context, debitId);
