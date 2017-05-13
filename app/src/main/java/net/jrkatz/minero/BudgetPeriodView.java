@@ -20,7 +20,6 @@ package net.jrkatz.minero;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -41,7 +40,7 @@ import java.util.ArrayList;
 public class BudgetPeriodView extends FrameLayout {
     private BudgetPeriod mBudgetPeriod;
     private Budget mBudget;
-    private DebitListView.ConfirmDebitRemoval mDebitRemoval;
+    private DebitListView.AttemptDebitEdit mDebitRemoval;
 
     public BudgetPeriodView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -50,7 +49,7 @@ public class BudgetPeriodView extends FrameLayout {
 
     public void bind(@NonNull final Budget budget,
                      @NonNull final BudgetPeriod budgetPeriod,
-                     @Nullable final DebitListView.ConfirmDebitRemoval debitRemoval) {
+                     @Nullable final DebitListView.AttemptDebitEdit debitRemoval) {
         mBudget = budget;
         mBudgetPeriod = budgetPeriod;
         mDebitRemoval = debitRemoval;

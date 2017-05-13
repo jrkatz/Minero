@@ -30,7 +30,6 @@ import android.view.MenuItem;
 import net.jrkatz.minero.data.Budget;
 import net.jrkatz.minero.data.BudgetPeriod;
 import net.jrkatz.minero.data.DataContextFactory;
-import net.jrkatz.minero.data.Debit;
 import net.jrkatz.minero.data.DebitConsumer;
 import net.jrkatz.minero.data.IDataChangeListener;
 import net.jrkatz.minero.data.IDataContext;
@@ -62,9 +61,9 @@ public class Lander extends AppCompatActivity implements IDataChangeListener {
                 return DataContextFactory.getDataContext(context);
             }
         });
-        budgetPeriodView.bind(budget, budgetPeriod, new DebitListView.ConfirmDebitRemoval() {
+        budgetPeriodView.bind(budget, budgetPeriod, new DebitListView.AttemptDebitEdit() {
             @Override
-            public void confirmDebitRemoval(@NonNull final DebitListEntry entry) {
+            public void attemptEditDebit(@NonNull final DebitListEntry entry) {
                 EditDebitFragment.newInstance(entry).show(getFragmentManager(), "remove_debit");
             }
         });

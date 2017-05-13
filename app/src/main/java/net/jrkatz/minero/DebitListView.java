@@ -19,24 +19,20 @@
 package net.jrkatz.minero;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.common.collect.ImmutableList;
 
 import net.jrkatz.minero.data.Debit;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -46,20 +42,20 @@ import java.util.List;
 public class DebitListView extends ListView {
     private ImmutableList<DebitListEntry> mEntries;
     private DebitsAdapter mAdapter;
-    private ConfirmDebitRemoval mDebitRemoval;
+    private AttemptDebitEdit mAttemptDebitEdit;
 
     public DebitListView(Context context, AttributeSet attrs) {
         super(context, attrs, R.attr.debitListViewStyle);
     }
 
-    public interface ConfirmDebitRemoval {
-        void confirmDebitRemoval(@NonNull final DebitListEntry entry);
+    public interface AttemptDebitEdit {
+        void attemptEditDebit(@NonNull final DebitListEntry entry);
     }
 
-    public void bind(final @NonNull ArrayList<Debit> debits, @Nullable final ConfirmDebitRemoval debitRemoval) {
+    public void bind(final @NonNull ArrayList<Debit> debits, @Nullable final AttemptDebitEdit debitEdit) {
         mEntries = DebitListEntry.makeEntries(debits);
         mAdapter = new DebitsAdapter(getContext(), mEntries);
-        mDebitRemoval = debitRemoval;
+        mAttemptDebitEdit = debitEdit;
         updateView();
     }
 
@@ -86,8 +82,8 @@ public class DebitListView extends ListView {
             view.setOnLongClickListener(new OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    if (mDebitRemoval != null && entry.getAmount() != 0) {
-                        mDebitRemoval.confirmDebitRemoval(entry);
+                    if (mAttemptDebitEdit != null) {
+                        mAttemptDebitEdit.attemptEditDebit(entry);
                     }
                     return true;
                 }
